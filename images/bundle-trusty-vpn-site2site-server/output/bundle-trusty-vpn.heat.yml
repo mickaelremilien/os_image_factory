@@ -251,7 +251,7 @@ resources:
             ssh-keygen -t rsa
             cd /home/cloud/
             #git clone  https://github.com/mickaelremilien/CLOUDPATT.git
-            sudo ansible-playbook /home/mickael/Documents/CLOUDWATT/os_image_factory/images/bundle-trusty-vpn-site2site/ansible/bootstrap.yml
+            #sudo ansible-playbook /home/mickael/Documents/CLOUDWATT/os_image_factory/images/bundle-trusty-vpn-site2site/ansible/bootstrap.yml
           params:
             $COUNTRY$: { get_param: COUNTRY }
             $PROVINCE$: { get_param: PROVINCE }
