@@ -1,0 +1,256 @@
+heat_template_version: 2013-05-23
+
+
+description: Virtual Private Network Stack Site to Site
+
+
+parameters:
+
+
+  image:
+    type: string
+    description: Glance Image
+    default: "Ubuntu 14.04"
+
+  keypair_name:
+    description: Keypair to inject in instance
+    label: SSH Keypair
+    type: string
+    default: mickael
+
+  flavor_name:
+    #mettre des n1
+    default: n2.cw.standard-1
+    description: Flavor to use for the deployed instance
+    type: string
+    label: Instance Type (Flavor)
+    constraints:
+      - allowed_values:
+        - n2.cw.standard-1
+        - n2.cw.standard-2
+        - n2.cw.standard-4
+        #- n2.cw.standard-8
+        #- n2.cw.standard-12
+        #- n2.cw.standard-16
+        #- n2.cw.highmem-2
+        #- n2.cw.highmem-4
+        #- n2.cw.highmem-8
+        #- n2.cw.highmem-12
+
+resources:
+
+  my_key3:
+    type: OS::Nova::KeyPair
+    properties:
+      save_private_key: true
+      name: my_key3
+
+  network:
+    type: OS::Neutron::Net
+
+  network2:
+    type: OS::Neutron::Net
+
+
+
+  subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: network }
+      ip_version: 4
+      cidr: { get_param: server_cidr }
+      host_routes:
+        - destination: 0.0.0.0/0
+          nexthop: { "Fn::Replace": [ {'.0/24': '.1'}, {get_param: server_cidr} ] }
+        - destination: { get_param: client_cidr }
+          nexthop: { "Fn::Replace": [ {'.0/24': '.100'}, {get_param: server_cidr} ] }
+
+  subnet2:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: network2 }
+      ip_version: 4
+      cidr:  { get_param: client_cidr }
+      host_routes:
+        - destination: 0.0.0.0/0
+          nexthop: { "Fn::Replace": [ {'.0/24': '.1'}, {get_param: client_cidr} ] }
+        - destination: { get_param: server_cidr }
+          nexthop: { "Fn::Replace": [ {'.0/24': '.100'}, {get_param: client_cidr} ] }
+
+
+  security_group:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - { direction: ingress, protocol: TCP, port_range_min: 22, port_range_max: 22 }
+        - { direction: ingress, protocol: TCP, port_range_min: 80, port_range_max: 80 }
+        - { direction: ingress, protocol: TCP, port_range_min: 443, port_range_max: 443 }
+        - { direction: ingress, protocol: UDP, port_range_min: 1194, port_range_max: 1194 }
+        - { direction: ingress, protocol: ICMP }
+        - { direction: egress, protocol: ICMP }
+        - { direction: egress, protocol: TCP }
+        - { direction: egress, protocol: UDP }
+        - { direction: egress, protocol: UDP, port_range_min: 1194, port_range_max: 1194 }
+
+  floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
+      #floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
+      port_id: { get_resource: server_port }
+
+  floating_ip2:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
+      #floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
+      port_id: { get_resource: client_port }
+
+  floating_ip_link:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip }
+      server_id: { get_resource: server }
+
+  floating_ip_link2:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip2 }
+      server_id: { get_resource: client }
+
+  server_port:
+    type: OS::Neutron::Port
+    properties:
+      security_groups:
+        - { get_resource: security_group }
+      network_id: { get_resource: network }
+      fixed_ips:
+        - ip_address: { "Fn::Replace": [ {'.0/24': '.100'}, {get_param: server_cidr} ] }
+
+
+  client_port:
+    type: OS::Neutron::Port
+    properties:
+      security_groups:
+        - { get_resource: security_group }
+      network_id: { get_resource: network2 }
+      fixed_ips:
+        - ip_address: { "Fn::Replace": [ {'.0/24': '.100'}, {get_param: client_cidr} ] }
+
+
+  client:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: keypair_name }
+      image:  { get_param: image }
+      flavor: { get_param: flavor_name }
+      networks:
+      - port: { get_resource: client_port }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/usr/bin/env bash
+            sudo mkdir /home/cloud/config
+            sudo chown -R cloud:cloud /home/cloud/config
+            echo -n "$ip_server$" >> /home/cloud/config/ip_server
+            echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
+            echo -n "$ssh_key_pub$" >> /home/cloud/.ssh//authorized_keys
+            echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
+            echo -n "$client_cidr$" >> /home/cloud/config/client_cidr
+            sed 's/\(.*\)\/.*/\1/' < /home/cloud/config/server_cidr > /home/cloud/config/server_cidr.tmp
+            sed 's/\(.*\)\/.*/\1/' < /home/cloud/config/client_cidr > /home/cloud/config/client_cidr.tmp
+            cp /home/cloud/config/client_cidr /home/cloud/config/client_cidr_gw.tmp
+            cp /home/cloud/config/client_cidr /home/cloud/config/client_cidr_gw_df.tmp
+            cp /home/cloud/config/server_cidr /home/cloud/config/server_cidr_gw.tmp
+            cp /home/cloud/config/server_cidr /home/cloud/config/server_cidr_gw_df.tmp
+            sed -i -e "s/\//:/g"  /home/cloud/config/server_cidr_gw.tmp
+            sed -i -e "s/\//:/g"  /home/cloud/config/server_cidr_gw_df.tmp
+            sed -i -e "s/0:24/100/g" /home/cloud/config/server_cidr_gw.tmp
+            sed -i -e "s/0:24/1/g"  /home/cloud/config/server_cidr_gw_df.tmp
+            sed -i -e "s/\//:/g"  /home/cloud/config/client_cidr_gw.tmp
+            sed -i -e "s/\//:/g"  /home/cloud/config/client_cidr_gw_df.tmp
+            sed -i -e "s/0:24/100/g" /home/cloud/config/client_cidr_gw.tmp
+            sed -i -e "s/0:24/1/g"  /home/cloud/config/client_cidr_gw_df.tmp
+            echo "$(date) - START" >> /var/log/vpn_srv.log
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update 2>&1 >> /var/log/vpn_client.log
+            echo "$(date) - update done" >> /var/log/vpn_client.log
+            apt-get -o Dpkg::Options::="--force-confold" upgrade -y 2>&1 >> /var/log/vpn_client.log
+            echo "$(date) - upgrade done" >> /var/log/vpn_client.log
+            apt-get -o Dpkg::Options::="--force-confold" install openvpn -y 2>&1 >> /var/log/vpn_client.log
+            echo "$(date) - openvpn done" >> /var/log/vpn_client.log
+            mkdir /etc/ansible
+            echo "[local]" >> /etc/ansible/hosts
+            echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
+            ssh-keygen -t rsa
+            cd /home/cloud/
+            #git clone  https://github.com/mickaelremilien/CLOUDPATT.git
+            sudo ansible-playbook /home/mickael/Documents/CLOUDWATT/os_image_factory/images/bundle-trusty-vpn-site2site/ansible/bootstrap2client.yml
+          params:
+            $ip_server$: { get_attr: [floating_ip, floating_ip_address] }
+            $ssh_key_priv$: { get_attr: [ my_key3, private_key ] }
+            $ssh_key_pub$: { get_attr: [ my_key3, public_key ] }
+            $server_cidr$: {get_param: server_cidr}
+            $client_cidr$: {get_param: client_cidr}
+
+  # my_key3:
+  #   type: OS::Nova::KeyPair
+  #   properties:
+  #     save_private_key: false
+  #     name: my_key3
+
+
+outputs:
+
+  private_key:
+      description: Private key
+      value: { get_attr: [ my_key3, private_key ] }
+
+  public_key:
+      description: Public key
+      value: { get_attr: [ my_key3, public_key ] }
+
+  server_private_ip:
+    description: IP address of server on private network
+    value: { get_attr: [ server, first_address ] }
+
+  client_private_ip:
+    description: IP address of server on private network
+    value: { get_attr: [ client, first_address ] }
+
+  floating_ip_server:
+    description: IP address of the deployed compute server
+    value: { get_attr: [floating_ip, floating_ip_address] }
+
+  floating_ip_client:
+    description: IP address of the deployed compute client
+    value: { get_attr: [floating_ip2, floating_ip_address] }
+
+  # server_id:
+  #   description: ID of the server
+  #   value: {get_resource: server}
+  #
+  # client_id:
+  #   description: ID of the server
+  #   value: { get_resource: client }
+  #
+  # security_group_id:
+  #   description: ID of the security group associate to the server
+  #   value: {get_resource: security_group}
+  #
+  # subnet_server_id:
+  #   description: ID of the private subnet associate to the server
+  #   value: {get_resource: subnet}
+  #
+  # subnet_client_id:
+  #   description: ID of the private subnet associate to the client
+  #   value: {get_resource: subnet2}
+  #
+  # network_server_id:
+  #   description: ID of the private network associate to the server
+  #   value: {get_resource: network}
+  #
+  # network_client_id:
+  #   description: ID of the private network associate to the client
+  #   value: {get_resource: network2}
