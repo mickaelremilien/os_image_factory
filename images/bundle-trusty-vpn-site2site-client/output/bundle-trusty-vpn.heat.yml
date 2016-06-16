@@ -185,7 +185,7 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             ssh-keygen -t rsa
             cd /home/cloud/
-            #git clone  https://github.com/mickaelremilien/CLOUDPATT.git
+            sudo ansible-playbook /home/cloud/ansible2/bootstrap.yml
             #sudo ansible-playbook /home/mickael/Documents/CLOUDWATT/os_image_factory/images/bundle-trusty-vpn-site2site/ansible/bootstrap.yml
           params:
             $ip_server$: { get_attr: [floating_ip, floating_ip_address] }
