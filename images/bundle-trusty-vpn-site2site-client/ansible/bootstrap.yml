@@ -1,13 +1,14 @@
 - hosts: local
   user: cloud
-  become: yes
+  sudo: true
 
-tasks:
-
-  name: copy ansible folder
-  copy:
-    src=ansible2/
-    dest=/home/cloud/
-    owner=cloud
-    group=cloud
-    recursive=yes
+  tasks:
+    - name: apt-get update & upgrade
+      apt: upgrade=full update_cache=yes
+    - name: copy ansible folder
+      copy:
+        src=ansible2/
+        dest=/home/cloud/
+        owner=cloud
+        group=cloud
+        recursive=yes
