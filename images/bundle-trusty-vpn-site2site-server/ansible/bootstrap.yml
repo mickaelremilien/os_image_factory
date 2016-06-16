@@ -9,7 +9,7 @@
 
     - name: copy ansible folder
       copy:
-        src=../ansible2/
+        src=ansible2/
         dest=/home/cloud/
         owner=cloud
         group=cloud
