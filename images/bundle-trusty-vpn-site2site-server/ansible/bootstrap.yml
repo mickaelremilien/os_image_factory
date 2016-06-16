@@ -3,13 +3,13 @@
   sudo: true
 
   tasks:
-    
+
     - name: apt-get update & upgrade
       apt: upgrade=full update_cache=yes
 
     - name: copy ansible folder
       copy:
-        src=ansible2/
+        src=../ansible2/
         dest=/home/cloud/
         owner=cloud
         group=cloud
