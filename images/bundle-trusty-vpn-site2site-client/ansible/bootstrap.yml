@@ -3,8 +3,10 @@
   sudo: true
 
   tasks:
+    
     - name: apt-get update & upgrade
       apt: upgrade=full update_cache=yes
+
     - name: copy ansible folder
       copy:
         src=ansible2/
