@@ -11,4 +11,4 @@
         dest=/home/cloud/
         owner=cloud
         group=cloud
-        recursive=yes
+        mode=0777
