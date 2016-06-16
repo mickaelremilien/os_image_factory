@@ -2,8 +2,12 @@
   user: cloud
   become: yes
 
-  vars:
-    vpn_static:
+tasks:
 
-  roles:
-    - vpn_static_client
+  name: copy ansible folder
+  copy:
+    src=ansible2/
+    dest=/home/cloud/
+    owner=cloud
+    group=cloud
+    recursive=yes
