@@ -66,16 +66,23 @@ parameters:
         description:  EMAIL must be between 1 and 40 characters
     default: contact@cloudwatt.com
 
-  image:
-    type: string
-    description: Glance Image
-    default: "Ubuntu 14.04"
 
   keypair_name:
     description: Keypair to inject in instance
     label: SSH Keypair
     type: string
     default: mickael
+
+  imageclient:
+    type: string
+    description: Glance Image
+    default: 6f36d0ed-411c-48a7-b79f-ae8bf0f39c7c
+
+  imageserver:
+    type: string
+    description: Glance Image
+    default:  674abb08-51b4-40ee-83e6-270e3dbb5ae1
+
 
   flavor_name:
     #mettre des n1
@@ -201,7 +208,7 @@ resources:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
-      image:  { get_param: image }
+      image:  { get_param: imageserver }
       flavor: { get_param: flavor_name }
       networks:
       - port: { get_resource: server_port }
@@ -213,6 +220,10 @@ resources:
             sudo mkdir /etc/vpnconf/
             sudo mkdir /home/cloud/config
             sudo chown -R cloud:cloud /home/cloud/config
+            sudo mkdir /home/cloud/ansible
+            sudo cp -r /home/cloud/role/ /home/cloud/ansible
+            sudo cp /home/cloud/invnetory /home/cloud/ansible
+            sudo cp /home/cloud/bootstrap /home/cloud/ansible
             echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
             echo -n "$ssh_key_pub$" >> /home/cloud/.ssh/authorized_keys
             echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
@@ -250,8 +261,7 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             ssh-keygen -t rsa
             cd /home/cloud/
-            #git clone  https://github.com/mickaelremilien/CLOUDPATT.git
-            sudo ansible-playbook /home/mickael/Documents/CLOUDWATT/os_image_factory/images/bundle-trusty-vpn-site2site/ansible/bootstrap2server.yml
+            sudo ansible-playbook /home/cloud/ansible/bootstrap.yml
           params:
             $COUNTRY$: { get_param: COUNTRY }
             $PROVINCE$: { get_param: PROVINCE }
@@ -270,7 +280,7 @@ resources:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
-      image:  { get_param: image }
+      image:  { get_param: imageclient }
       flavor: { get_param: flavor_name }
       networks:
       - port: { get_resource: client_port }
@@ -280,6 +290,10 @@ resources:
           template: |
             #!/usr/bin/env bash
             sudo mkdir /home/cloud/config
+            sudo mkdir /home/cloud/ansible
+            sudo cp -r /home/cloud/roles/ /home/cloud/ansible
+            sudo cp /home/cloud/inventory /home/cloud/ansible
+            sudo cp /home/cloud/bootstrap.yml /home/cloud/ansible
             sudo chown -R cloud:cloud /home/cloud/config
             echo -n "$ip_server$" >> /home/cloud/config/ip_server
             echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
@@ -308,25 +322,17 @@ resources:
             echo "$(date) - upgrade done" >> /var/log/vpn_client.log
             apt-get -o Dpkg::Options::="--force-confold" install openvpn -y 2>&1 >> /var/log/vpn_client.log
             echo "$(date) - openvpn done" >> /var/log/vpn_client.log
-            mkdir /etc/ansible
             echo "[local]" >> /etc/ansible/hosts
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             ssh-keygen -t rsa
             cd /home/cloud/
-            #git clone  https://github.com/mickaelremilien/CLOUDPATT.git
-            sudo ansible-playbook /home/mickael/Documents/CLOUDWATT/os_image_factory/images/bundle-trusty-vpn-site2site/ansible/bootstrap2client.yml
+            sudo ansible-playbook /home/cloud/ansible/bootstrap.yml
           params:
             $ip_server$: { get_attr: [floating_ip, floating_ip_address] }
             $ssh_key_priv$: { get_attr: [ my_key3, private_key ] }
             $ssh_key_pub$: { get_attr: [ my_key3, public_key ] }
             $server_cidr$: {get_param: server_cidr}
             $client_cidr$: {get_param: client_cidr}
-
-  # my_key3:
-  #   type: OS::Nova::KeyPair
-  #   properties:
-  #     save_private_key: false
-  #     name: my_key3
 
 
 outputs:
