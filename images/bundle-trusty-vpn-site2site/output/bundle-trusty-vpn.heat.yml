@@ -221,9 +221,9 @@ resources:
             sudo mkdir /home/cloud/config
             sudo chown -R cloud:cloud /home/cloud/config
             sudo mkdir /home/cloud/ansible
-            sudo cp -r /home/cloud/role/ /home/cloud/ansible
-            sudo cp /home/cloud/invnetory /home/cloud/ansible
-            sudo cp /home/cloud/bootstrap /home/cloud/ansible
+            sudo cp -r /home/cloud/roles/ /home/cloud/ansible
+            sudo cp /home/cloud/inventory /home/cloud/ansible
+            sudo cp /home/cloud/bootstrap.yml /home/cloud/ansible
             echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
             echo -n "$ssh_key_pub$" >> /home/cloud/.ssh/authorized_keys
             echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
@@ -322,6 +322,7 @@ resources:
             echo "$(date) - upgrade done" >> /var/log/vpn_client.log
             apt-get -o Dpkg::Options::="--force-confold" install openvpn -y 2>&1 >> /var/log/vpn_client.log
             echo "$(date) - openvpn done" >> /var/log/vpn_client.log
+            mkdir /etc/ansible
             echo "[local]" >> /etc/ansible/hosts
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             ssh-keygen -t rsa
