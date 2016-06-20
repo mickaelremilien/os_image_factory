@@ -273,6 +273,12 @@
     regexp='X.X.X.X'
     replace='{{ip_server}}'
 
+- name: setting server.conf
+  replace:
+    dest=/etc/openvpn/server.conf
+    regexp='X.X.X.X'
+    replace='{{server_cidr}}'
+
 - name: pack config client
   args:
     chdir: /etc/openvpn/
