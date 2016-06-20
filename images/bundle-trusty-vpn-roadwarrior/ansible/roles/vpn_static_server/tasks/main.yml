@@ -192,11 +192,11 @@
     group=cloud
     recurse=yes
 
-- name: setting server.conf 
+- name: setting server.conf
   replace:
     dest=/etc/openvpn/server.conf
     regexp='push "route X.X.X.X 255.255.255.0"'
-    replace='push "route {{server_cidr}} 255.255.255.0"
+    replace='push "route {{server_cidr}} 255.255.255.0"'
 
 - name: generate openvpn conf1
   args:
