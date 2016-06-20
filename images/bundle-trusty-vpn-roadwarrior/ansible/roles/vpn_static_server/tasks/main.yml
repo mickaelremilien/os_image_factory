@@ -322,5 +322,5 @@
     chdir: /home/cloud
     executable: /bin/bash
   shell: |
-    sudo rm -r CLOUDPATT
-    #sudo rm -r config
+    sudo rm -r os_image_factory
+    sudo rm -r config
