@@ -28,6 +28,7 @@
     - git
     - libssl-dev
     - openvpn
+    - iptables-persistent
     - traceroute
     - easy-rsa
     - gadmin-openvpn-server
@@ -294,6 +295,15 @@
     group=cloud
     mode=600
 
+- name: iptablenat
+  args:
+    chdir: /home/cloud
+    executable: /bin/bash
+  shell: |
+    sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+    sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    sudo /etc/init.d/iptables-persistent save
+    sudo /etc/init.d/iptables-persistent reload
 
 - name: starting openvpn
   args:
