@@ -1,6 +1,16 @@
 heat_template_version: 2013-05-23
 
 parameters:
+  imageweb:
+    type: string
+    description: Glance Image
+    default: 98972e98-936a-4385-92f4-bef555fc171c
+
+  imagemy:
+    type: string
+    description: Glance Image
+    default: 47d1ebd8-519e-4ad6-8317-a5605abdfcf6
+
   image:
     type: string
     description: Glance Image
@@ -243,7 +253,7 @@ resources:
           lb_pool: {get_resource: web_lb_pool}
           lb_port: 80
           flavor: {get_param: flavor}
-          image: {get_param: image}
+          image: {get_param: imageweb}
           key_name: {get_param: keypair_name}
           network_id: {get_resource: internal_net}
           security_groups:
@@ -264,7 +274,7 @@ resources:
           lb_port: 4567
           lb_port: 4568
           flavor: {get_param: flavor}
-          image: {get_param: image}
+          image: {get_param: imagemy}
           key_name: {get_param: keypair_name}
           network_id: {get_resource: internal_net2}
           security_groups:

@@ -12,7 +12,7 @@ parameters:
   image:
     type: string
     description: Glance Image
-    default: "Ubuntu 14.04"
+    default: 47d1ebd8-519e-4ad6-8317-a5605abdfcf6
 
   flavor:
     type: string
@@ -106,10 +106,11 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             cd /home/cloud
             echo  "$mysqlpwd$" > /home/cloud/mysqlpwd
-            git clone  https://github.com/mickaelremilien/CLOUDPATT.git
-            sudo ansible-playbook /home/cloud/CLOUDPATT/image-factory/bundle-trusty-wordpressfr1/ansible/boot2strapMYSQL.yml
-            sudo rm -Rf /home/cloud/CLOUDPATT
-            sudo rm /home/cloud/mysqlpwd
+            sudo chown cloud:cloud  /home/cloud/mysqlpwd
+            sudo cp -R /home/cloud/ansible2 /home/cloud/ansible
+            sudo mv /home/cloud/ansible/boot2strapMYSQL.yml /home/cloud/ansible/bootstrap.yml
+            sudo ansible-playbook /home/cloud/ansible/bootstrap.yml
+            #sudo rm /home/cloud/mysqlpwd
           params:
             $mysqlpwd$: { get_param: themysqlpwd }
 
