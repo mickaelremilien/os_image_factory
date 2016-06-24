@@ -4,6 +4,8 @@
       #chdir: /etc/openvpn/
       executable: /bin/bash
     shell: |
+      sudo apt-get update
+      sudo apt-get ugrade 
       sudo apt-get install apache2 libapache2-mod-wsgi graphite-web graphite-carbon -y
       sudo echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main" >>  /etc/apt/sources.list
       sudo curl https://packagecloud.io/gpg.key | apt-key add -
