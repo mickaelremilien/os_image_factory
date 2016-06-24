@@ -4,7 +4,7 @@
 
 ![OpenVPNlogo](http://allnightburger.com/wp-content/uploads/2015/12/openvpn-logo.jpg)
 
-Créé en 2002, Open est un outil open source utilisé pour construire des VPNs site à site avec le protocole SSL/TLS ou avec des clefs partagées. Son rôle est de "tunneliser", de manière sécurisée, des données sur un seul port TCP/UDP à travers un réseau non sûr comme Internet et ainsi établir des VPNs.
+Créé en 2002, Openvpn est un outil open source utilisé pour construire des VPNs site à site avec le protocole SSL/TLS ou avec des clefs partagées. Son rôle est de "tunneliser", de manière sécurisée, des données sur un seul port TCP/UDP à travers un réseau non sûr comme Internet et ainsi établir des VPNs.
 OpenVPN peut être installé sur presque toutes les plateformes comme Linux, Microsoft Windows 2000/XP/Vista, OpenBSD, FreeBSD, NetBSD, Mac OS X et Solaris.
 Les systèmes Linux doivent avoir un noyau 2.4 ou supérieur. Le principe de configuration reste le même quel que soit la plate-forme utilisée.
 OpenVPN crée un tunnel TCP ou UDP et ensuite chiffre les données à l'intérieur de celui-ci.
@@ -12,7 +12,7 @@ Le port par défaut utilisé par OpenVPN est le port UDP 1194, basé sur un assi
 
 ## Descriptions
 
-La stack "vpn(site-to-site)"" crée deux instance, un client VPN et un serveur VPN puis monte un tunnel vpn entre ces deux noeuds.
+La stack "vpn(site-to-site)" ée une instance serveur OpenVPN prêt a recevoir des connexion de client distant.
 
 ## Preparations
 
