@@ -12,7 +12,7 @@ The port(bearing) by default used by OpenVPN is the port(bearing) UDP 1194, base
 
 ## Descriptions
 
-La stack "vpn(site-to-site)"" create 2 instance, a OpenVPN client  et a OpenVPN serveur then install a vpn tunnel between those two nodes.
+La stack "vpn(site-to-site)"" create an instance, a OpenVPN server ready to recieive connexion from remote client.
 
 ## Preparations
 
@@ -33,9 +33,9 @@ La stack "vpn(site-to-site)"" create 2 instance, a OpenVPN client  et a OpenVPN 
 
  ## What will you find in the repository
 
-  Once you have cloned the github, you will find in the `bundle-coreos-cassandra/` repository:
+  Once you have cloned the github, you will find in the `bundle-trusty-vpn-site2site/` repository:
 
-  * `bundle-coreos-cassandra.heat.yml`: HEAT orchestration template. It will be used to deploy the necessary infrastructure.
+  * `bundle-trusty-vpn.heat.yml`: HEAT orchestration template. It will be used to deploy the necessary infrastructure.
   * `stack-start.sh`: Stack launching script. This is a small script that will save you some copy-paste.
 
  ## Start-up
@@ -57,7 +57,7 @@ La stack "vpn(site-to-site)"" create 2 instance, a OpenVPN client  et a OpenVPN 
 
  ### Adjust the parameters
 
-  With the `bundle-coreos-cassandra.heat.yml` file, you will find at the top a section named `parameters`. The sole mandatory parameter to adjust is the one called `keypair_name`. Its `default` value must contain a valid keypair with regards to your Cloudwatt user account. This is within this same file that you can adjust the instance size by playing with the `flavor_name` parameter.
+  With the `bundle-trusty-vpn.heat.yml` file, you will find at the top a section named `parameters`. The sole mandatory parameter to adjust is the one called `keypair_name`. Its `default` value must contain a valid keypair with regards to your Cloudwatt user account. This is within this same file that you can adjust the instance size by playing with the `flavor_name` parameter.
 
 ~~~ yaml
 heat_template_version: 2013-05-23
@@ -154,7 +154,7 @@ parameters:
 [...]
 ~~~
 
-By default, ports(bearings) used by Openvpn are accessible only on the local area network, if you wish to change these rules of filtering (to open for example the port XXX), you can also edit the file `bundle-trusty-vpn.heat.yml `.
+By default, ports used by Openvpn are accessible only on the local area network, if you wish to change these rules of filtering (to open for example the port XXX), you can also edit the file `bundle-trusty-vpn.heat.yml `.
 ~~~ yaml
 security_group:
   type: OS::Neutron::SecurityGroup
@@ -219,8 +219,7 @@ Then wait for **5 minutes** that the deployement have been completed.
 - PROVINCE(entre 1 et 40 characters)
 - EMAIL (entre 1 et 40 characters)
 - COUNTRY (entre 1 et 2 characters)
- 10.  Enter the client and server network that you want to configurate ending by /24 :
- Client_cidr :  X.X.X.X/24
+ 10.  Enter the server subnet that you want to configure ending by /24 :  
  Server_cidr : X.X.X.X/24
  11. Choose the size of your instance among the up and down menu  « flavor_name » and click on « Launch »
  12. connect yourself on the server and the client OpenVPN by ssh using your ssh key with the following command
@@ -229,17 +228,17 @@ Then wait for **5 minutes** that the deployement have been completed.
 Le script `start-stack.sh` handles launch the necessary calls to the API Cloudwatt :
 
 
-* Start 2 instances based on Ubnuntu , pre- provisioned with the OpenVPN stack .
-* Configure two nodes an OpenVPN server and OpenVPN client.
-* Mount the VPN tunnel between the two nodes.
+* Start an instances based on Ubnuntu , pre-provisioned with the OpenVPN stack .
+* Install and Configure  OpenVPN on the server.
 
-![OpenVPNArchi](http://www.samn0.fr/wp-content/uploads/2011/03/800px-VPN_site-to-site.jpg)
+
+![OpenVPNArchi](img/Nomade.png)
 
 ### Enjoy
 
-Once this is done you have VPN tunnel between two remote website ready to use, you can retrieve the IP (public and private), subnets, networks, associated with instances created with the following command (Section `outputs` list the outputs of the stack)
+Once this is done you have got a Openvpn server RoadWarrior ready to use, you can retrieve the IP (public and private), subnets, networks, associated with instances created with the following command (Section `outputs` list the outputs of the stack)
 
-You will have 2 silos fully isolated network that can nevertheless communicate through an encrypted tunnel.
+You will have a fully isolated network that can nevertheless communicate through an encrypted tunnel.
 
 You can view the stack output parameters in the console
 by clicking: Stack → name of your stack → The Overview tab
@@ -247,16 +246,11 @@ by clicking: Stack → name of your stack → The Overview tab
 The outputs of the stack are:
 
 - Server_id (id of the instance vpn server)
-- Client_id (id of the client instance vpn)
 - Floating_ip_server (public IP associated with the vpn server)
-- Floating_ip_client (public IP associated with the VPN client)
 - Security_group_id (id of the security group)
 - Server_private_ip (private IP address of the VPN server)
-- Client_private_ip (private IP address of the VPN client)
 - Subnet_server_id (network under the id associated with the vpn server)
 - Network_server_id (id associated to the private network vpn server)
-- Subnet_client_id (network under the id associated with the VPN client)
-- Network_client_id (id associated to the private network vpn client)
 
 ~~~ bash
 $ heat stack-show OpenVPN
@@ -326,7 +320,7 @@ grep VPN /var/log/syslog
 
 ### Spawn instances in subnets client nodes and OpenVPN server
 
-Go to the " Instances " section of the console. Start Instance  to create the server side instances and  the client side instances.
+Go to the " Instances " section of the console. Start Instance to create the server side instances.
 
 To start these instance you must complete the following steps  :
 
@@ -390,6 +384,7 @@ ssh -i your_key cloud@<node-ip@>
 
 * [OpenVPN Homepage](https://openvpn.net/)
 * [Ubuntu OpenVPN Homepage](https://doc.ubuntu-fr.org/openvpn)
+* to mount the VPN tunnel between  remote instances you have to copy the archive configclient.tar.gz on them, to install the Openvpn client and to copy the archive in the `/etc/openvpn` folder, unarchive it, replace the server address in the client.conf file and finally start the openvpn service.
 
 
 -----

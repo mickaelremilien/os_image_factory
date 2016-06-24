@@ -246,7 +246,7 @@ resources:
       min_size: 2
       max_size: 5
       resource:
-        type: srv_wdprss.yaml
+        type: http://storage.fr1.cloudwatt.net:8080/v1/AUTH_772be1ffb32e42a28ac8e0205c0b0b90/WORDPRESSHA/srv_wdprss.yaml
         properties:
           themysqlpwd: {get_param: themysqlpwd}
           sql_lb_pool: {get_resource: sql_lb_pool}
@@ -265,7 +265,7 @@ resources:
       min_size: 3
       max_size: 5
       resource:
-        type: srv_sql.yaml
+        type: http://storage.fr1.cloudwatt.net:8080/v1/AUTH_772be1ffb32e42a28ac8e0205c0b0b90/WORDPRESSHA/srv_sql.yaml
         properties:
           themysqlpwd: {get_param: themysqlpwd}
           lb_pool: {get_resource: sql_lb_pool}
