@@ -22,15 +22,15 @@
   #     update_cache=yes
   #     cache_valid_time=3600
 
-- name: packages installed
-  apt:
-    pkg={{ item }}
-    state=present
-  with_items:
-    - apache2
-    - libapache2-mod-wsgi
-    - graphite-web
-    - graphite-carbon
+ - name: packages installed
+   apt:
+     pkg={{ item }}
+     state=present
+   with_items:
+     - apache2
+     - libapache2-mod-wsgi
+     - graphite-web
+     - graphite-carbon
 
  - name: download packages
    args:
