@@ -1,22 +1,63 @@
 ---
-  - name: download packages
-    args:
-      #chdir: /etc/openvpn/
-      executable: /bin/bash
-    shell: |
-      sudo apt-get update
-      sudo apt-get ugrade 
-      sudo apt-get install apache2 libapache2-mod-wsgi graphite-web graphite-carbon -y
-      sudo echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main" >>  /etc/apt/sources.list
-      sudo curl https://packagecloud.io/gpg.key | apt-key add -
-      sudo apt-get update -y
-      wget https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.3-1463994644_amd64.deb
-      sudo apt-get install -y adduser libfontconfig
-      sudo dpkg -i grafana_3.0.3-1463994644_amd64.deb
-      sudo apt-get update
-      sudo apt-get install grafana
-      sudo apt-get install apt-transport-https -y
-      sudo apt-get install collectd collectd-utils -y
+#  - name: download packages
+#    args:
+#      #chdir: /etc/openvpn/
+#      executable: /bin/bash
+#    shell: |
+#      sudo apt-get install apache2 libapache2-mod-wsgi graphite-web graphite-carbon -y
+#      sudo echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main" >>  /etc/apt/sources.list
+#      sudo curl https://packagecloud.io/gpg.key | apt-key add -
+#      sudo apt-get update -y
+#      wget https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.3-1463994644_amd64.deb
+#      sudo apt-get install -y adduser libfontconfig
+#      sudo dpkg -i grafana_3.0.3-1463994644_amd64.deb
+#      sudo apt-get update
+#      sudo apt-get install grafana
+#      sudo apt-get install apt-transport-https -y
+#      sudo apt-get install collectd collectd-utils -y
+
+  - name: apt-get update & upgrade
+    apt:
+      upgrade=full
+      update_cache=yes
+      cache_valid_time=3600
+
+  - name: wheezy backports repositories added
+    apt_repository: state=present repo='https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main'
+
+  - name: fr locale generated
+    locale_gen: name=fr_FR.UTF-8 state=present
+
+  - name: packages installed
+    apt:
+      pkg={{ item }}
+      state=present
+    with_items:
+      - apache2
+      - libapache2-mod-wsgi
+      - graphite-web
+      - graphite-carbon
+
+  - name: apt-get update & upgrade
+    apt:
+      upgrade=full
+      update_cache=yes
+      cache_valid_time=3600
+
+  - name: dpkg grapfana
+    apt: deb=https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.3-1463994644_amd64.deb
+
+  - name: packages installed
+    apt:
+      pkg={{ item }}
+      state=present
+    with_items:
+      - adduser
+      - libfontconfig
+      - grafana
+      - apt-transport-https
+      - collectd
+      - collectd-util
 
   - name: configuration Apache pour graphite
     args:
