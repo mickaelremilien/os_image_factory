@@ -61,7 +61,7 @@
     - grafana
     - apt-transport-https
     - collectd
-    - collectd-util
+    - collectd-utils
 
 - name: configuration Apache pour graphite
   args:
