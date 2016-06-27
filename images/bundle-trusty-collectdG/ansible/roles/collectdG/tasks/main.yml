@@ -22,22 +22,22 @@
   #     update_cache=yes
   #     cache_valid_time=3600
 
- - name: packages installed
-   apt:
-     pkg={{ item }}
-     state=present
-   with_items:
-     - apache2
-     - libapache2-mod-wsgi
-     - graphite-web
-     - graphite-carbon
+- name: packages installed
+  apt:
+    pkg={{ item }}
+    state=present
+  with_items:
+    - apache2
+    - libapache2-mod-wsgi
+    - graphite-web
+    - graphite-carbon
 
- - name: download packages
-   args:
-     #chdir: /etc/openvpn/
-     executable: /bin/bash
-   shell: |
-     sudo echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main" >>  /etc/apt/sources.list
+- name: download packages
+  args:
+    #chdir: /etc/openvpn/
+    executable: /bin/bash
+  shell: |
+    sudo echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main" >>  /etc/apt/sources.list
 
   # - name: fr locale generated
   #   locale_gen: name=fr_FR.UTF-8 state=present
@@ -48,78 +48,78 @@
   #     update_cache=yes
   #     cache_valid_time=3600
 
-  - name: dpkg grapfana
-    apt: deb=https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.3-1463994644_amd64.deb
+- name: dpkg grapfana
+  apt: deb=https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.3-1463994644_amd64.deb
 
-  - name: packages installed
-    apt:
-      pkg={{ item }}
-      state=present
-    with_items:
-      - adduser
-      - libfontconfig
-      - grafana
-      - apt-transport-https
-      - collectd
-      - collectd-util
+- name: packages installed
+  apt:
+    pkg={{ item }}
+    state=present
+  with_items:
+    - adduser
+    - libfontconfig
+    - grafana
+    - apt-transport-https
+    - collectd
+    - collectd-util
 
-  - name: configuration Apache pour graphite
-    args:
-      #chdir: /etc/openvpn/
-      executable: /bin/bash
-    shell: |
-      sudo -i
-      a2dissite 000-default
-      cp /usr/share/graphite-web/apache2-graphite.conf /etc/apache2/sites-available
-      a2ensite apache2-graphite
+- name: configuration Apache pour graphite
+  args:
+    #chdir: /etc/openvpn/
+    executable: /bin/bash
+  shell: |
+    sudo -i
+    a2dissite 000-default
+    cp /usr/share/graphite-web/apache2-graphite.conf /etc/apache2/sites-available
+    a2ensite apache2-graphite
 
   #- name: setting enable carbon-cache
-  - replace:
-      dest=/etc/default/graphite-carbon
-      regexp='#CARBON_CACHE_ENABLED=false'
-      replace='CARBON_CACHE_ENABLED=true'
+- replace:
+    dest=/etc/default/graphite-carbon
+    regexp='#CARBON_CACHE_ENABLED=false'
+    replace='CARBON_CACHE_ENABLED=true'
 
   #- name: setting enable carbon-cache2
-  - replace:
-      dest=/etc/carbon/carbon.conf
-      regexp='#ENABLE_LOGROTATION=false'
-      replace='ENABLE_LOGROTATION=true'
+- replace:
+    dest=/etc/carbon/carbon.conf
+    regexp='#ENABLE_LOGROTATION=false'
+    replace='ENABLE_LOGROTATION=true'
 
   #- name: setting enable carbon-cache3
-  - replace:
-      dest=/etc/carbon/carbon.conf
-      regexp='#MAX_CREATES_PER_MINUTE=50'
-      replace='MAX_CREATES_PER_MINUTE=600'
+- replace:
+    dest=/etc/carbon/carbon.conf
+    regexp='#MAX_CREATES_PER_MINUTE=50'
+    replace='MAX_CREATES_PER_MINUTE=600'
 
-  - name:   configuration graphite-carbon
-    args:
-      #chdir: /etc/openvpn/
-      executable: /bin/bash
-    shell: |
-      sudo -i
-      cp /usr/share/doc/graphite-carbon/examples/storage-aggregation.conf.example /etc/carbon/storage-aggregation.conf
+- name:   configuration graphite-carbon
+  args:
+    #chdir: /etc/openvpn/
+    executable: /bin/bash
+  shell: |
+    sudo -i
+    cp /usr/share/doc/graphite-carbon/examples/storage-aggregation.conf.example /etc/carbon/storage-aggregation.conf
 
   #- name: setting  graphite-local
-  - replace:
-      dest=/etc/graphite/local_settings.py
-      regexp='#SECRET_KEY=\'UNSAFE_DEFAULT\''
-      replace='SECRET_KEY=\'jkfdjlskfjdslkjopelezkmlezakmlza5654trlkre\''
+- replace:
+    dest=/etc/graphite/local_settings.py
+    regexp='#SECRET_KEY=\'UNSAFE_DEFAULT\''
+    replace='SECRET_KEY=\'jkfdjlskfjdslkjopelezkmlezakmlza5654trlkre\''
 
   #- name: setting  graphite-local2
-  - replace:
-      dest=/etc/graphite/local_settings.py
-      regexp='#TIME_ZONE=America/Los_Angeles'
-      replace='TIME_ZONE=Europe/Paris'
+- replace:
+    dest=/etc/graphite/local_settings.py
+    regexp='#TIME_ZONE=America/Los_Angeles'
+    replace='TIME_ZONE=Europe/Paris'
 
-  - name: demarrage services
-    args:
-      #chdir: /etc/openvpn/
-      executable: /bin/bash
-    shell: |
-      graphite-manage syncdb --noinput
-      chown _graphite:_graphite /var/lib/graphite/graphite.db
-      sudo service carbon-cache restart
-      sudo service apache2 restart
-      sudo service grafana-server restart
-      sudo service collecd restart
-      #update-rc.d grafana-server defaults 95 10
+- name: demarrage services
+  args:
+    #chdir: /etc/openvpn/
+    executable: /bin/bash
+  shell: |
+    graphite-manage syncdb --noinput
+    chown _graphite:_graphite /var/lib/graphite/graphite.db
+    sudo service carbon-cache restart
+    sudo service apache2 restart
+    sudo service grafana-server restart
+    sudo service collecd restart
+    #update-rc.d grafana-server defaults 95 10
