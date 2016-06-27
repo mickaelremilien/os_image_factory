@@ -131,7 +131,13 @@
 - lineinfile: dest=/etc/collectd/collectd.conf line="                AlwaysAppendDS false"
 - lineinfile: dest=/etc/collectd/collectd.conf line="                EscapeCharacter "_""
 - lineinfile: dest=/etc/collectd/collectd.conf line="        </Carbon>"
-- lineinfile: dest=/etc/collectd/collectd.conf line="</Plugin>"
+- lineinfile: dest=/etc/collectd/collectd.conf line="##</Plugin>"
+
+- replace:
+    dest=//etc/collectd/collectd.conf
+    regexp='##</Plugin>'
+    replace='</Plugin>'
+
 - name: demarrage services
   args:
     #chdir: /etc/openvpn/
