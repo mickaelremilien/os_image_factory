@@ -23,7 +23,14 @@
   #     cache_valid_time=3600
 
   - name: wheezy backports repositories added
-    apt_repository: state=present repo='https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main'
+    apt_repository:
+      state=present
+      repo='https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main'
+
+  - name: wheezy backports repositories added
+    apt_repository:
+      state=present
+      repo='deb=https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main'
 
   - name: fr locale generated
     locale_gen: name=fr_FR.UTF-8 state=present
@@ -38,11 +45,11 @@
       - graphite-web
       - graphite-carbon
 
-  - name: apt-get update & upgrade
-    apt:
-      upgrade=full
-      update_cache=yes
-      cache_valid_time=3600
+  # - name: apt-get update & upgrade
+  #   apt:
+  #     upgrade=full
+  #     update_cache=yes
+  #     cache_valid_time=3600
 
   - name: dpkg grapfana
     apt: deb=https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.3-1463994644_amd64.deb
