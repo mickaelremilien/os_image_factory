@@ -117,7 +117,7 @@
     executable: /bin/bash
   shell: |
     graphite-manage syncdb --noinput
-    chown _graphite:_graphite /var/lib/graphite/graphite.db
+    sudo chown _graphite:_graphite /var/lib/graphite/graphite.db
     sudo service carbon-cache restart
     sudo service apache2 restart
     sudo service grafana-server restart
