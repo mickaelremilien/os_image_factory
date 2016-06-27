@@ -102,7 +102,7 @@
   #- name: setting  graphite-local
 - replace:
     dest=/etc/graphite/local_settings.py
-    regexp=UNSAFE_DEFAULT'
+    regexp='UNSAFE_DEFAULT'
     replace='jkfdjlskfjdslkjopelezkmlezakmlza5654trlkre'
 
   #- name: setting  graphite-local2
