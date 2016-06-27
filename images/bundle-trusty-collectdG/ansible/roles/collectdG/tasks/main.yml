@@ -105,12 +105,22 @@
     regexp='UNSAFE_DEFAULT'
     replace='jkfdjlskfjdslkjopelezkmlezakmlza5654trlkre'
 
-  #- name: setting  graphite-local2
 - replace:
     dest=/etc/graphite/local_settings.py
-    regexp='#TIME_ZONE= 'America/Los_Angeles''
-    replace='TIME_ZONE= 'Europe/Paris''
+    regexp='#SECRET_KEY'
+    replace='SECRET_KEY'
+  #- name: setting  graphite-local2
 
+- replace:
+    dest=/etc/graphite/local_settings.py
+    regexp='#TIME_ZONE'
+    replace='TIME_ZONE'
+
+- replace:
+    dest=/etc/graphite/local_settings.py
+    regexp='America/Los_Angeles'
+    replace='Europe/Paris'
+    
 - name: demarrage services
   args:
     #chdir: /etc/openvpn/
