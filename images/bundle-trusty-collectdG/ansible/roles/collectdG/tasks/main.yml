@@ -39,8 +39,8 @@
    shell: |
      sudo echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main" >>  /etc/apt/sources.list
 
-  - name: fr locale generated
-    locale_gen: name=fr_FR.UTF-8 state=present
+  # - name: fr locale generated
+  #   locale_gen: name=fr_FR.UTF-8 state=present
 
   # - name: apt-get update & upgrade
   #   apt:
