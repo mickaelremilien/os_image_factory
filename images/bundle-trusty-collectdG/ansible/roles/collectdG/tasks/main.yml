@@ -120,7 +120,7 @@
     dest=/etc/graphite/local_settings.py
     regexp='America/Los_Angeles'
     replace='Europe/Paris'
-    
+
 - name: demarrage services
   args:
     #chdir: /etc/openvpn/
@@ -132,4 +132,4 @@
     sudo service apache2 restart
     sudo service grafana-server restart
     sudo service collecd restart
-    #update-rc.d grafana-server defaults 95 10
+    sudo update-rc.d grafana-server defaults 95 10
