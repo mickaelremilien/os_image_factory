@@ -10,7 +10,7 @@
     with_items:
       - python-django-tagging
       - python-django
-      - python-zope-interface
+      - python-zope.interface
       - pycairo
       - python-twisted
       - httpd mod_wsgi
