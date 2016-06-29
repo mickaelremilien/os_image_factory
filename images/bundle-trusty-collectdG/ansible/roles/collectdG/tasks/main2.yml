@@ -70,55 +70,55 @@
       cd carbon-0.9.10
       sudo python setup.py install
 
-  # Configuration Carbon
-   - name: config carbon
-     copy:
-       src=/opt/graphite/conf/carbon.conf.example
-       dest=/opt/graphite/conf/carbon.conf
-       #owner=
-       #group=
-       #mode=0644
+# Configuration Carbon
+  - name: config carbon
+    copy:
+      src=/opt/graphite/conf/carbon.conf.example
+      dest=/opt/graphite/conf/carbon.conf
+      #owner=
+      #group=
+      #mode=0644
 
-   - name: config carbon2
-     copy:
-       src=/opt/graphite/conf/storage-schemas.conf.example
-       dest=/opt/graphite/conf/storage-schemas.conf
-       #owner=
-       #group=
-       #mode=0644
+  - name: config carbon2
+    copy:
+      src=/opt/graphite/conf/storage-schemas.conf.example
+      dest=/opt/graphite/conf/storage-schemas.conf
+      #owner=
+      #group=
+      #mode=0644
 
   #Configuration de la webapp
 
-   - name: conf web app
-     file:
-       path=/etc/httpd/conf.d/wsgi.conf
-       #owner=foo
-       #group=foo
-       state=absent
+  - name: conf web app
+    file:
+      path=/etc/httpd/conf.d/wsgi.conf
+      #owner=foo
+      #group=foo
+      state=absent
 
-   - name: conf web app2
-     copy:
-       src=/opt/graphite/examples/example-graphite-vhost.conf
-       dest=/etc/httpd/conf.d/vhost-graphite.conf
-       #owner=
-       #group=
-       #mode=0644
+  - name: conf web app2
+    copy:
+      src=/opt/graphite/examples/example-graphite-vhost.conf
+      dest=/etc/httpd/conf.d/vhost-graphite.conf
+      #owner=
+      #group=
+      #mode=0644
 
-    - name: conf web app3
-      copy:
-        src=/opt/graphite/conf/graphite.wsgi.example
-        dest=/opt/graphite/conf/graphite.wsgi
-        #owner=
-        #group=
-        #mode=0644
+  - name: conf web app3
+    copy:
+      src=/opt/graphite/conf/graphite.wsgi.example
+      dest=/opt/graphite/conf/graphite.wsgi
+      #owner=
+      #group=
+      #mode=0644
 
-    - name: conf web app4
-      copy:
-        src=/opt/graphite/webapp/graphite/local_settings.py.example
-        dest=/opt/graphite/webapp/graphite/local_settings.py
-        #owner=
-        #group=
-        #mode=0644
+  - name: conf web app4
+    copy:
+      src=/opt/graphite/webapp/graphite/local_settings.py.example
+      dest=/opt/graphite/webapp/graphite/local_settings.py
+      #owner=
+      #group=
+      #mode=0644
 
   - name: demarrage services
     args:
