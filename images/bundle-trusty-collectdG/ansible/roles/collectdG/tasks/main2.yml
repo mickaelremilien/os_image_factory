@@ -90,11 +90,10 @@
   #Configuration de la webapp
 
   - name: conf web app
-    file:
-      path=/etc/httpd/conf.d/wsgi.conf
+    file: path=/etc/httpd/conf.d/wsgi.conf state=absent
       #owner=foo
       #group=foo
-      state=absent
+
 
   - name: conf web app2
     copy:
