@@ -11,7 +11,7 @@
       - python-django-tagging
       - python-django
       - python-zope.interface
-      - pycairo
+      - python-cairo
       - python-twisted
       - httpd mod_wsgi
        #--enablerepo=epel
