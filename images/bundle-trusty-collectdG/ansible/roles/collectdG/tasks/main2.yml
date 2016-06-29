@@ -1,4 +1,8 @@
 ---
+- hosts: localhost
+  user: cloud
+  become: yes
+  tasks:
   - name: packages installed
     apt:
       pkg={{ item }}
