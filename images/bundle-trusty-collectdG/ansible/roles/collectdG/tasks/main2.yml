@@ -8,8 +8,8 @@
       pkg={{ item }}
       state=present
     with_items:
-      - django-tagging
-      - Django
+      - python-django-tagging
+      - python-django
       - python-zope-interface
       - pycairo
       - python-twisted
