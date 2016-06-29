@@ -1,6 +1,4 @@
 ---
-  - name: download packet
-
   - name: packages installed
     apt:
       pkg={{ item }}
