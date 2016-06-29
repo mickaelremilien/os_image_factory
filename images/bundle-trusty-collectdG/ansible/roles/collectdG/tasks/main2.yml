@@ -20,8 +20,8 @@
       pkg={{ item }}
      state=present
     with_items:
-      - apache2.2-common
-      - apache2-mpm-prefork
+      #- apache2.2-common
+      #- apache2-mpm-prefork
       - apache2-utils
       - libexpat1
       - ssl-cert
