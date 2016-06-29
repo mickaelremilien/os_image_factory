@@ -127,7 +127,7 @@ resources:
             sudo mkdir /home/cloud/config
             sudo chown -R cloud:cloud /home/cloud/config
             git clone https://github.com/mickaelremilien/os_image_factory.git
-            sudo ansible-playbook os_image_factory/images/bundle-trusty-collectdG/ansible/boot2strapcollectdG.yml
+            #sudo ansible-playbook os_image_factory/images/bundle-trusty-collectdG/ansible/boot2strapcollectdG.yml
 
   server_port:
     type: OS::Neutron::Port
