@@ -36,19 +36,19 @@
   - name: download carbon and force basic auth
     get_url:
       url=https://launchpad.net/graphite/0.9/0.9.10/+download/carbon-0.9.10.tar.gz
-      dest=/tmp/graphite/carbon-0.9.10.tar.gz
+      dest=/tmp/graphite/
       force_basic_auth=yes
 
   - name: download whisper and force basic auth
     get_url:
       url=https://launchpad.net/graphite/0.9/0.9.10/+download/whisper-0.9.10.tar.gz
-      dest=/tmp/graphite/carbon-0.9.10.tar.gz
+      dest=/tmp/graphite/
       force_basic_auth=yes
 
   - name: download graphite-web and force basic auth
     get_url:
       url=https://launchpad.net/graphite/0.9/0.9.10/+download/graphite-web-0.9.10.tar.gz
-      dest=/tmp/graphite/carbon-0.9.10.tar.gz
+      dest=/tmp/graphite/
       force_basic_auth=yes
 
 # Unarchive  packages
