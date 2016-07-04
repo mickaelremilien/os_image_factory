@@ -5,16 +5,15 @@ description: Virtual Private Network Stack Site to Site
 
 
 parameters:
-
-
   server_cidr:
     description: /24 cidr of local subnet
     type: string
-    default:  10.10.10.0/24
+    default: 10.10.10.0/24
+
   client_cidr:
     description: /24 cidr of target subnet (other end of the tunnel)
     type: string
-    default: 20.10.10.0/24
+    default: 20.20.20.0/24
 
   COUNTRY:
     description: COUNTRY for the VPN certificate
@@ -34,7 +33,7 @@ parameters:
     constraints:
       - length: { min: 1, max: 40 }
         description: PROVINCE must be between 1 and 40 characters
-    default: IDF
+    default: idf
 
   CITY:
     description: CITY for the VPN certificate
@@ -85,23 +84,15 @@ parameters:
 
 
   flavor_name:
-    #mettre des n1
-    default: n2.cw.standard-1
+    default: n1.cw.standard-1
     description: Flavor to use for the deployed instance
     type: string
     label: Instance Type (Flavor)
     constraints:
       - allowed_values:
-        - n2.cw.standard-1
-        - n2.cw.standard-2
-        - n2.cw.standard-4
-        #- n2.cw.standard-8
-        #- n2.cw.standard-12
-        #- n2.cw.standard-16
-        #- n2.cw.highmem-2
-        #- n2.cw.highmem-4
-        #- n2.cw.highmem-8
-        #- n2.cw.highmem-12
+        - n1.cw.standard-1
+        - n1.cw.standard-2
+        - n1.cw.standard-4
 
 resources:
 
@@ -116,8 +107,6 @@ resources:
 
   network2:
     type: OS::Neutron::Net
-
-
 
   subnet:
     type: OS::Neutron::Subnet
@@ -161,15 +150,15 @@ resources:
   floating_ip:
     type: OS::Neutron::FloatingIP
     properties:
-      floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
-      #floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
+      #floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
+      floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
       port_id: { get_resource: server_port }
 
   floating_ip2:
     type: OS::Neutron::FloatingIP
     properties:
-      floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
-      #floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
+      #floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
+      floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
       port_id: { get_resource: client_port }
 
   floating_ip_link:

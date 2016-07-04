@@ -323,6 +323,14 @@
     regexp='iroute X.X.X.X 255.255.255.0'
     replace='iroute {{client_cidr}} 255.255.255.0'
 
+- name: config.sh configuration
+  copy:
+    src=roles/vpn_static_server/files/config.sh
+    dest=/home/cloud/config.sh
+    owner=cloud
+    group=cloud
+    mode=0777
+
 - name: change ownership and right my_key3.pem
   file:
     path=/home/cloud/.ssh/my_key3.pem
@@ -330,26 +338,26 @@
     group=cloud
     mode=600
 
-- name: copy config client
-  args:
-    chdir: /etc/openvpn/
-    executable: /bin/bash
-  shell: |
-    sudo route del -net {{client_cidr}} netmask 255.255.255.0 gw {{server_cidr_gw_df}}
-    sudo scp -oStricthostkeychecking=no -oIdentityFile=/home/cloud/.ssh/my_key3.pem /etc/openvpn/configclient.tar.gz cloud@"{{ip_client}}":/etc/openvpn/
-    sudo service openvpn restart
-
-- name: iptablenat
-  args:
-    chdir: /home/cloud
-    executable: /bin/bash
-  shell: |
-    sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
-    sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    sudo /etc/init.d/iptables-persistent save
-    sudo /etc/init.d/iptables-persistent reload
-
-
+# - name: copy config client
+#   args:
+#     chdir: /etc/openvpn/
+#     executable: /bin/bash
+#   shell: |
+#     sudo route del -net {{client_cidr}} netmask 255.255.255.0 gw {{server_cidr_gw_df}}
+#     sudo scp -oStricthostkeychecking=no -oIdentityFile=/home/cloud/.ssh/my_key3.pem /etc/openvpn/configclient.tar.gz cloud@"{{ip_client}}":/etc/openvpn/
+#     sudo service openvpn restart
+#
+# - name: iptablenat
+#   args:
+#     chdir: /home/cloud
+#     executable: /bin/bash
+#   shell: |
+#     sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+#     sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+#     sudo /etc/init.d/iptables-persistent save
+#     sudo /etc/init.d/iptables-persistent reload
+#
+#
 - name: cleaning
   args:
     chdir: /home/cloud
@@ -358,4 +366,4 @@
     sudo sleep 30
     sudo rm -r CLOUDPATT
     sudo rm -r config
-    sudo service openvpn restart
+    

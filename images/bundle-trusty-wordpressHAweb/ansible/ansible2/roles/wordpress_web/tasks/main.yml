@@ -13,21 +13,13 @@
 - name: download wordpress
   get_url:
     url=http://wordpress.org/latest.tar.gz
-    dest=/home/cloud/wordpress.tar.gz
+    dest=/var/www/wordpress.tar.gz
     mode=0775
 
 - name: Unarchive wordpress
   unarchive:
-   src=/home/cloud/wordpress.tar.gz
-   dest=/home/cloud/
-
-- name: move wordpress
-  copy:
-    src=/home/cloud/wordpress
-    dest=/var/www/
-    owner=www-data
-    group=www-data
-    mode=0705
+   src=/var/www/wordpress.tar.gz
+   dest=/var/www/
 
 - name: copy config wp
   copy:
