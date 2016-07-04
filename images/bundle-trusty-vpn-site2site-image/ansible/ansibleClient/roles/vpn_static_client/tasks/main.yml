@@ -1,0 +1,108 @@
+---
+- name: wheezy backports repositories added
+  apt_repository: state=present repo='deb http://ftp.us.debian.org/debian wheezy-backports main'
+
+- name: apt-get update & upgrade
+  apt:
+    upgrade=full
+    update_cache=yes
+    cache_valid_time=3600
+
+- name: enable IPv4 forwarding
+  shell: sysctl net.ipv4.ip_forward=1
+
+- name: enable IPv6 forwarding
+  shell: sysctl net.ipv6.conf.all.forwarding=1
+
+- name: fr locale generated
+  locale_gen: name=fr_FR.UTF-8 state=present
+
+- name: packages installed
+  apt:
+    pkg={{ item }}
+    state=present
+  with_items:
+    - iptables-persistent
+    - openssl
+    - curl
+    - bzip2
+    - unzip
+    - gzip
+    - tar
+    - git
+    - libssl-dev
+    - openvpn
+    - traceroute
+    - easy-rsa
+    - gadmin-openvpn-server
+
+- name: setting openvpn autostart
+  replace:
+    dest=/etc/default/openvpn
+    regexp='#AUTOSTART="all"'
+    replace='AUTOSTART="all"'
+
+- name: change owner and rights on openvpn directory
+  file:
+    path=/etc/openvpn
+    state=directory
+    owner=cloud
+    group=cloud
+
+- name: config.sh configuration
+  copy:
+    src=roles/vpn_static_client/files/config.sh
+    dest=/home/cloud/config.sh
+    owner=cloud
+    group=cloud
+    mode=0777
+
+# - name: wait for configclient.tar.gz
+#   wait_for:
+#     path=/etc/openvpn/configclient.tar.gz
+#     timeout=8000
+
+# - name: unarchive configclient.tar.gz
+#   unarchive:
+#     src=/etc/openvpn/configclient.tar.gz
+#     dest=/etc/openvpn/
+
+# - name: modification configclient
+#   replace:
+#     dest=/etc/openvpn/configclient/client.conf
+#     regexp='X.X.X.X'
+#     replace='{{ip_server}}'
+
+# - name: extract config client
+#   args:
+#     chdir: /etc/openvpn/configclient
+#     executable: /bin/bash
+#   shell: |
+#     sudo route del -net {{server_cidr}} netmask 255.255.255.0 gw {{client_cidr_gw}}
+#     sudo mv client1.crt ..
+#     sudo mv client1.key ..
+#     sudo mv ta.key ..
+#     sudo mv ca.crt ..
+#     sudo mv client.conf ..
+#     cd /home/cloud/
+#     sudo service openvpn restart
+
+
+# - name: cleaning + iptablenat
+#   args:
+#     chdir: /home/cloud
+#     executable: /bin/bash
+#   shell: |
+#       sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+#       sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+#       sudo /etc/init.d/iptables-persistent save
+#       sudo /etc/init.d/iptables-persistent reload
+
+- name: adding route
+  args:
+    chdir: /home/cloud
+    executable: /bin/bash
+  shell: |
+    sudo sleep 30
+    sudo rm -r CLOUDPATT
+    sudo rm -r config
