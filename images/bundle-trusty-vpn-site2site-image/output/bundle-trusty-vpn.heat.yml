@@ -6,7 +6,6 @@ description: Virtual Private Network Stack Site to Site
 
 parameters:
 
-
   image:
     type: string
     description: Glance Image
@@ -30,9 +29,38 @@ parameters:
         - n1.cw.standard-4
 
 resources:
-
   network:
     type: OS::Neutron::Net
+
+  subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: network }
+      ip_version: 4
+      cidr: 10.0.1.0/24
+      allocation_pools:
+        - { start: 10.0.1.10, end: 10.0.1.199 }
+
+  floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      #floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
+      floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
+      port_id: { get_resource: server_port }
+
+  floating_ip_link:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip }
+      server_id: { get_resource: server }
+
+  server_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: network }
+      fixed_ips:
+        - subnet_id: { get_resource: subnet }
+      security_groups: [{ get_resource: security_group }]
 
   security_group:
     type: OS::Neutron::SecurityGroup
@@ -48,12 +76,14 @@ resources:
         - { direction: egress, protocol: UDP }
         - { direction: egress, protocol: UDP, port_range_min: 1194, port_range_max: 1194 }
 
-  image:
+  server:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
       image:  { get_param: image }
       flavor: { get_param: flavor_name }
+      networks:
+        - port: { get_resource: server_port }
       user_data_format: RAW
       user_data:
         #!/usr/bin/env bash
@@ -70,4 +100,4 @@ resources:
         echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
         ssh-keygen -t rsa
         cd /home/cloud/
-        sudo ansible-playbook /home/cloud/ansible2/bootstrap.yml
+        sudo ansible-playbook /home/cloud/ansible/bootstrap.yml
