@@ -75,7 +75,7 @@ parameters:
   imageserver:
     type: string
     description: Glance Image
-    default:  c8be665b-db66-4344-bb2e-225a89e365c3
+    default:  c8c7e66f-ed92-481a-9de2-05e65d33c6c6
 
   flavor_name:
     description: Flavor to use for the deployed instance
@@ -162,10 +162,10 @@ resources:
             sudo mkdir /etc/vpnconf/
             sudo mkdir /home/cloud/config
             sudo chown -R cloud:cloud /home/cloud/config
-            sudo mkdir /home/cloud/ansible
-            sudo cp -r /home/cloud/roles/ /home/cloud/ansible
-            sudo cp /home/cloud/inventory /home/cloud/ansible
-            sudo cp /home/cloud/bootstrap.yml /home/cloud/ansible
+            # sudo mkdir /home/cloud/ansible
+            # sudo cp -r /home/cloud/roles/ /home/cloud/ansible
+            # sudo cp /home/cloud/inventory /home/cloud/ansible
+            # sudo cp /home/cloud/bootstrap.yml /home/cloud/ansible
             # echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
             # echo -n "$ssh_key_pub$" >> /home/cloud/.ssh/authorized_keys
             echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
