@@ -125,7 +125,7 @@
 - lineinfile: dest=/etc/collectd/collectd.conf line="        <Carbon>"
 - lineinfile: dest=/etc/collectd/collectd.conf line="                Host "localhost""
 - lineinfile: dest=/etc/collectd/collectd.conf line="                Port "2003""
-- lineinfile: dest=/etc/collectd/collectd.conf line="                LogSendErrors true""
+- lineinfile: dest=/etc/collectd/collectd.conf line="                LogSendErrors true
 - lineinfile: dest=/etc/collectd/collectd.conf line="                Prefix "collectd""
 - lineinfile: dest=/etc/collectd/collectd.conf line="                Postfix "collectd""
 - lineinfile: dest=/etc/collectd/collectd.conf line="                StoreRates false"
