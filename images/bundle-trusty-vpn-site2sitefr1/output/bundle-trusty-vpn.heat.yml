@@ -9,10 +9,12 @@ parameters:
   server_cidr:
     description: /24 cidr of local subnet
     type: string
+    default: 10.10.10.0/24
 
   client_cidr:
     description: /24 cidr of target subnet (other end of the tunnel)
     type: string
+    default: 20.20.20.0/24
 
   COUNTRY:
     description: COUNTRY for the VPN certificate
@@ -22,6 +24,7 @@ parameters:
     constraints:
       - length: { min: 1, max: 2 }
         description: COUNTRY must be between 1 and 2 characters
+    default: FR
 
   PROVINCE:
     description: PROVINCE for the VPN certificate
@@ -31,6 +34,7 @@ parameters:
     constraints:
       - length: { min: 1, max: 40 }
         description: PROVINCE must be between 1 and 40 characters
+    default: IDF
 
   CITY:
     description: CITY for the VPN certificate
@@ -40,6 +44,7 @@ parameters:
     constraints:
       - length: { min: 1, max: 40 }
         description: CITY must be between 1 and 40 characters
+    default: Paris
 
   ORGANISATION:
     description: ORGANISATION for the VPN certificate
@@ -49,6 +54,7 @@ parameters:
     constraints:
       - length: { min: 1, max: 40 }
         description: ORGANISATION must be between 1 and 40 characters
+    default: CLOUDWATT
 
   EMAIL:
     description: EMAIL for the VPN certificate
@@ -58,16 +64,18 @@ parameters:
     constraints:
       - length: { min: 1, max: 40 }
         description:  EMAIL must be between 1 and 40 characters
+    default: contact@Cloudwatt.com
 
   keypair_name:
     description: Keypair to inject in instance
     label: SSH Keypair
     type: string
+    default: mickael
 
   imageserver:
     type: string
     description: Glance Image
-    default:  674abb08-51b4-40ee-83e6-270e3dbb5ae1
+    default:  c8be665b-db66-4344-bb2e-225a89e365c3
 
   flavor_name:
     description: Flavor to use for the deployed instance
@@ -78,14 +86,15 @@ parameters:
         - n1.cw.standard-1
         - n1.cw.standard-2
         - n1.cw.standard-4
+    default:  n1.cw.standard-1
 
 resources:
 
-  my_key3:
-    type: OS::Nova::KeyPair
-    properties:
-      save_private_key: true
-      name: my_key3
+  # my_key3:
+  #   type: OS::Nova::KeyPair
+  #   properties:
+  #     save_private_key: true
+  #     name: my_key3
 
   network:
     type: OS::Neutron::Net
@@ -157,8 +166,8 @@ resources:
             sudo cp -r /home/cloud/roles/ /home/cloud/ansible
             sudo cp /home/cloud/inventory /home/cloud/ansible
             sudo cp /home/cloud/bootstrap.yml /home/cloud/ansible
-            echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
-            echo -n "$ssh_key_pub$" >> /home/cloud/.ssh/authorized_keys
+            # echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
+            # echo -n "$ssh_key_pub$" >> /home/cloud/.ssh/authorized_keys
             echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
             echo -n "$client_cidr$" >> /home/cloud/config/client_cidr
             sed 's/\(.*\)\/.*/\1/' < /home/cloud/config/server_cidr > /home/cloud/config/server_cidr.tmp
@@ -194,16 +203,14 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             ssh-keygen -t rsa
             cd /home/cloud/
-            sudo ansible-playbook /home/cloud/ansible/bootstrap.yml
+            sudo ansible-playbook /home/cloud/ansibleServer/bootstrap.yml
           params:
             $COUNTRY$: { get_param: COUNTRY }
             $PROVINCE$: { get_param: PROVINCE }
             $CITY$: { get_param: CITY }
             $ORGANISATION$: { get_param: ORGANISATION }
             $EMAIL$:  { get_param: EMAIL }
-            $ip_client$: { get_attr: [floating_ip2, floating_ip_address] }
-            $ssh_key_priv$: { get_attr: [ my_key3, private_key ] }
-            $ssh_key_pub$: { get_attr: [ my_key3, public_key ] }
+            # $ip_client$: { get_attr: [floating_ip2, floating_ip_address] }
             $client_cidr$: {get_param: client_cidr}
             $server_cidr$: {get_param: server_cidr}
 
@@ -213,9 +220,9 @@ outputs:
   #     description: Private key
   #     value: { get_attr: [ my_key3, private_key ] }
 
-  public_key:
-      description: Public key
-      value: { get_attr: [ my_key3, public_key ] }
+  # public_key:
+  #     description: Public key
+  #     value: { get_attr: [ my_key3, public_key ] }
 
   server_private_ip:
     description: IP address of server on private network
