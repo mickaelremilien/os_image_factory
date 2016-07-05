@@ -7,7 +7,7 @@
     - name: apt-get update & upgrade
       apt: upgrade=full update_cache=yes
 
-    - name: copy ansible folder
+    - name: copy ansible folder WEB
       copy:
         src=ansible2/
         dest=/home/cloud/ansible2/
