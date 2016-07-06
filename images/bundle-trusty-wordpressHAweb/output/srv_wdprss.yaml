@@ -81,7 +81,7 @@ resources:
             cd /home/cloud/
             echo  "$mysqlpwd$" >> /home/cloud/mysqlpwd
             git clone  https://github.com/mickaelremilien/CLOUDPATT.git
-            sudo ansible-playbook /home/cloud/CLOUDPATT/image-factory/bundle-trusty-wordpressfr1/ansible/boot2strapWORD.yml
+            sudo ansible-playbook /home/cloud/CLOUDPATT/image-factory/bundle-trusty-wordpressHAweb/ansible/bootstrap.yml
             sudo rm -Rf /home/cloud/CLOUDPATT
             sudo rm /home/cloud/mysqlpwd
           params:

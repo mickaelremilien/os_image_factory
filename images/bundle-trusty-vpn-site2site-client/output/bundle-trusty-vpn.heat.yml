@@ -39,7 +39,7 @@ parameters:
 
 resources:
 
-  my_key3:
+  my_key:
     type: OS::Nova::KeyPair
     properties:
       save_private_key: true

@@ -6,6 +6,11 @@ description: Virtual Private Network Stack Site to Site
 
 parameters:
 
+  mykey_name:
+    description: Keypair to inject in instance
+    label: SSH Keypair
+    type: string
+
   server_cidr:
     description: /24 cidr of local subnet
     type: string
@@ -75,7 +80,7 @@ parameters:
   imageserver:
     type: string
     description: Glance Image
-    default:  c8c7e66f-ed92-481a-9de2-05e65d33c6c6
+    default:  b4e7b680-4b78-4b46-a835-88b2ebf019b1
 
   flavor_name:
     description: Flavor to use for the deployed instance
@@ -90,11 +95,11 @@ parameters:
 
 resources:
 
-  # my_key3:
-  #   type: OS::Nova::KeyPair
-  #   properties:
-  #     save_private_key: true
-  #     name: my_key3
+  my_key:
+    type: OS::Nova::KeyPair
+    properties:
+      save_private_key: true
+      name: { get_param: mykey_name }
 
   network:
     type: OS::Neutron::Net
@@ -162,12 +167,9 @@ resources:
             sudo mkdir /etc/vpnconf/
             sudo mkdir /home/cloud/config
             sudo chown -R cloud:cloud /home/cloud/config
-            # sudo mkdir /home/cloud/ansible
-            # sudo cp -r /home/cloud/roles/ /home/cloud/ansible
-            # sudo cp /home/cloud/inventory /home/cloud/ansible
-            # sudo cp /home/cloud/bootstrap.yml /home/cloud/ansible
-            # echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
-            # echo -n "$ssh_key_pub$" >> /home/cloud/.ssh/authorized_keys
+            echo -n "$mykey_namepriv$" >> /home/cloud/.ssh/"$mykey_name$".pem
+            echo -n "$mykey_name$" >> home/cloud/config/mykey_name
+            echo -n "$mykey_namepub$" >> /home/cloud/.ssh/authorized_keys
             echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
             echo -n "$client_cidr$" >> /home/cloud/config/client_cidr
             sed 's/\(.*\)\/.*/\1/' < /home/cloud/config/server_cidr > /home/cloud/config/server_cidr.tmp
@@ -210,19 +212,17 @@ resources:
             $CITY$: { get_param: CITY }
             $ORGANISATION$: { get_param: ORGANISATION }
             $EMAIL$:  { get_param: EMAIL }
-            # $ip_client$: { get_attr: [floating_ip2, floating_ip_address] }
+            $mykey_name$: {get_param: mykey_name }
+            $mykey_namepriv$: { get_attr: [ my_key, private_key ] }
+            $mykey_namepub$: {  get_attr: [ my_key, public_key ] }
             $client_cidr$: {get_param: client_cidr}
             $server_cidr$: {get_param: server_cidr}
 
 outputs:
 
-  # private_key:
-  #     description: Private key
-  #     value: { get_attr: [ my_key3, private_key ] }
-
-  # public_key:
-  #     description: Public key
-  #     value: { get_attr: [ my_key3, public_key ] }
+  public_key:
+      description: Public key
+      value: { get_attr: [ my_key, public_key ] }
 
   server_private_ip:
     description: IP address of server on private network
