@@ -14,80 +14,36 @@ parameters:
     description: /24 cidr of local subnet
     type: string
 
-  COUNTRY:
-    description: COUNTRY for the VPN certificate
-    label: certificate VPN COUNTRY
+  ip_server_adress:
+    description: ip server floating ip
     type: string
-    hidden: true
-    constraints:
-      - length: { min: 1, max: 2 }
-        description: COUNTRY must be between 1 and 2 characters
-
-  PROVINCE:
-    description: PROVINCE for the VPN certificate
-    label: certificate VPN PROVINCE
-    type: string
-    hidden: true
-    constraints:
-      - length: { min: 1, max: 40 }
-        description: PROVINCE must be between 1 and 40 characters
-
-  CITY:
-    description: CITY for the VPN certificate
-    label: certificate VPN CITY
-    type: string
-    hidden: true
-    constraints:
-      - length: { min: 1, max: 40 }
-        description: CITY must be between 1 and 40 characters
-
-  ORGANISATION:
-    description: ORGANISATION for the VPN certificate
-    label: certificate VPN ORGANISATION
-    type: string
-    hidden: true
-    constraints:
-      - length: { min: 1, max: 40 }
-        description: ORGANISATION must be between 1 and 40 characters
-
-  EMAIL:
-    description: EMAIL for the VPN certificate
-    label: certificate VPN EMAIL
-    type: string
-    hidden: true
-    constraints:
-      - length: { min: 1, max: 40 }
-        description:  EMAIL must be between 1 and 40 characters
 
   keypair_name:
     description: Keypair to inject in instance
     label: SSH Keypair
     type: string
 
+  serv_public_key:
+    description: public KEY server openvpn
+    type: string
+
   imageclient:
     type: string
     description: Glance Image
-    default: 6f36d0ed-411c-48a7-b79f-ae8bf0f39c7c
+    default: a5c4e203-b7a6-4d2d-a68d-db343f629bc2
 
   flavor_name:
-    #mettre des n1
-    default: n2.cw.standard-1
+    default: n2.cw.standard-2
     description: Flavor to use for the deployed instance
     type: string
     label: Instance Type (Flavor)
     constraints:
       - allowed_values:
-        - n1.cw.standard-1
-        - n1.cw.standard-2
-        - n1.cw.standard-4
+        - n2.cw.standard-1
+        - n2.cw.standard-2
+        - n2.cw.standard-4
 
 resources:
-
-  my_key3:
-    type: OS::Nova::KeyPair
-    properties:
-      save_private_key: true
-      name: my_key3
 
   network2:
     type: OS::Neutron::Net
@@ -153,14 +109,9 @@ resources:
           template: |
             #!/usr/bin/env bash
             sudo mkdir /home/cloud/config
-            sudo mkdir /home/cloud/ansible
-            sudo cp -r /home/cloud/roles/ /home/cloud/ansible
-            sudo cp /home/cloud/inventory /home/cloud/ansible
-            sudo cp /home/cloud/bootstrap.yml /home/cloud/ansible
+            echo -n "$serv_public_key$" >> /home/cloud/.ssh/authorized_keys
             sudo chown -R cloud:cloud /home/cloud/config
             echo -n "$ip_server$" >> /home/cloud/config/ip_server
-            echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key3.pem
-            echo -n "$ssh_key_pub$" >> /home/cloud/.ssh//authorized_keys
             echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
             echo -n "$client_cidr$" >> /home/cloud/config/client_cidr
             sed 's/\(.*\)\/.*/\1/' < /home/cloud/config/server_cidr > /home/cloud/config/server_cidr.tmp
@@ -190,36 +141,19 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             ssh-keygen -t rsa
             cd /home/cloud/
-            sudo ansible-playbook /home/cloud/ansible/bootstrap.yml
+            sudo ansible-playbook /home/cloud/ansibleClient/bootstrap.yml
           params:
-            $ip_server$: { get_attr: [floating_ip, floating_ip_address] }
-            $ssh_key_priv$: { get_attr: [ my_key3, private_key ] }
-            $ssh_key_pub$: { get_attr: [ my_key3, public_key ] }
+            $ip_server$: { get_param: ip_server_adress }
             $server_cidr$: {get_param: server_cidr}
             $client_cidr$: {get_param: client_cidr}
-
+            $autkey$: {get_param: serv_public_key}
 
 outputs:
-
-  # private_key:
-  #     description: Private key
-  #     value: { get_attr: [ my_key3, private_key ] }
-
-  public_key:
-      description: Public key
-      value: { get_attr: [ my_key3, public_key ] }
-
-  server_private_ip:
-    description: IP address of server on private network
-    value: { get_attr: [ server, first_address ] }
 
   client_private_ip:
     description: IP address of server on private network
     value: { get_attr: [ client, first_address ] }
 
-  floating_ip_server:
-    description: IP address of the deployed compute server
-    value: { get_attr: [floating_ip, floating_ip_address] }
 
   floating_ip_client:
     description: IP address of the deployed compute client
