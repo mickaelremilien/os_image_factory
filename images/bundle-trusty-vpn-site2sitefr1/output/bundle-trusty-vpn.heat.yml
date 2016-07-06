@@ -80,7 +80,7 @@ parameters:
   imageserver:
     type: string
     description: Glance Image
-    default:  d37c7996-2fd1-469a-ade1-6b1f543733f0
+    default:  76e19959-7826-4ca2-8011-0f0e93ecbf97
 
   flavor_name:
     description: Flavor to use for the deployed instance
