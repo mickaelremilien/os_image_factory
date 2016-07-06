@@ -341,8 +341,8 @@
 - name: setting config.sh 4
   replace:
     dest=/home/cloud/config.sh
-    regexp='my_key'
-    replace='{{mykey_name}}'
+    regexp=' -oIdentityFile=/home/cloud/.ssh/my_key.pem '
+    replace=' -oIdentityFile=/home/cloud/.ssh/{{mykey_name}}.pem '
 
 - name: cleaning
   args:
