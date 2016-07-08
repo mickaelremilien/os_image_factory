@@ -251,8 +251,6 @@
     mode=644
     backup=yes
 
-
-
 - name: pack config client
   args:
     chdir: /etc/openvpn/
@@ -289,15 +287,14 @@
     chown cloud configclient.tar.gz
     chmod 755 configclient.tar.gz
     chgrp cloud configclient.tar.gz
-
-
+    sudo cp configclient.tar.gz /home/cloud/
+    chown cloud:cloud configclient.tar.gz
 
 - name: setting openvpn autostart
   replace:
     dest=/etc/default/openvpn
     regexp='#AUTOSTART="all"'
     replace='AUTOSTART="all"'
-
 
 - name: change ownership and right my_key.pem
   file:
