@@ -30,7 +30,7 @@ parameters:
   imageclient:
     type: string
     description: Glance Image
-    default: a5c4e203-b7a6-4d2d-a68d-db343f629bc2
+    default:  d085337b-d992-4802-a9fb-48536c2723f7
 
   flavor_name:
     default: n2.cw.standard-2
@@ -109,7 +109,7 @@ resources:
           template: |
             #!/usr/bin/env bash
             sudo mkdir /home/cloud/config
-            echo -n "$serv_public_key$" >> /home/cloud/.ssh/authorized_keys
+            echo -n "$autkey$" >> /home/cloud/.ssh/authorized_keys
             sudo chown -R cloud:cloud /home/cloud/config
             echo -n "$ip_server$" >> /home/cloud/config/ip_server
             echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
@@ -142,6 +142,7 @@ resources:
             ssh-keygen -t rsa
             cd /home/cloud/
             sudo ansible-playbook /home/cloud/ansibleClient/bootstrap.yml
+            sudo rm -r ansibleServer ansibleClient config 
           params:
             $ip_server$: { get_param: ip_server_adress }
             $server_cidr$: {get_param: server_cidr}

@@ -80,7 +80,7 @@ parameters:
   imageserver:
     type: string
     description: Glance Image
-    default:  511c214f-6a70-4cde-a6a0-a1a4efcfe0e7
+    default:  3f504144-cc7f-4072-b161-09ecc0e6e5ff
 
   flavor_name:
     description: Flavor to use for the deployed instance
@@ -207,6 +207,8 @@ resources:
             cd /home/cloud/
             sudo chown -R cloud:cloud /home/cloud/config/
             sudo ansible-playbook /home/cloud/ansibleServer/bootstrap.yml
+            sudo sed -i 's/{{ma_key}}/$mykey_name$/g' /home/cloud/config.sh
+            sudo rm -r ansibleServer ansibleClient config 
           params:
             $COUNTRY$: { get_param: COUNTRY }
             $PROVINCE$: { get_param: PROVINCE }
