@@ -1,6 +1,6 @@
 ---
 bundle:
-  name: bundle-trusty-vpn-site2site-image
+  name: bundle-trusty-vpn-roadwarrior-image
   img_base: 6622878a-c762-4a88-b594-c30f255dcc06
   properties:
     img_os: Ubuntu
