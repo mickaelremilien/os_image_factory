@@ -66,10 +66,10 @@ parameters:
         description:  EMAIL must be between 1 and 40 characters
     default: contact@cloudwatt.com
 
-  image:
+  imageserver:
     type: string
     description: Glance Image
-    default: "Ubuntu 14.04"
+    default: 3451985b-0960-4cbf-8adb-dce4e15a13a1
 
   keypair_name:
     description: Keypair to inject in instance
@@ -78,7 +78,7 @@ parameters:
     default: mickael
 
   flavor_name:
-    default: n2.cw.standard-2
+    default: n1.cw.standard-2
     description: Flavor to use for the deployed instance
     type: string
     label: Instance Type (Flavor)
@@ -86,16 +86,10 @@ parameters:
       - allowed_values:
         - t1.cw.tiny
         - s1.cw.small-1
-        - n2.cw.standard-1
-        - n2.cw.standard-2
-        - n2.cw.standard-4
-        - n2.cw.standard-8
-        - n2.cw.standard-12
-        - n2.cw.standard-16
-        - n2.cw.highmem-2
-        - n2.cw.highmem-4
-        - n2.cw.highmem-8
-        - n2.cw.highmem-12
+        - n1.cw.standard-1
+        - n1.cw.standard-2
+        - n1.cw.standard-4
+
 
 resources:
 
@@ -185,7 +179,7 @@ resources:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
-      image:  { get_param: image }
+      image:  { get_param: imageserver }
       flavor: { get_param: flavor_name }
       networks:
       - port: { get_resource: server_port }
@@ -226,8 +220,7 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             ssh-keygen -t rsa
             cd /home/cloud/
-            git clone  https://github.com/mickaelremilien/os_image_factory.git
-            sudo ansible-playbook /home/cloud/os_image_factory/images/bundle-trusty-vpn-roadwarrior/ansible/bootstrap.yml
+            sudo ansible-playbook /home/cloud/ansibleServer/bootstrap.yml
           params:
             $COUNTRY$: { get_param: COUNTRY }
             $PROVINCE$: { get_param: PROVINCE }
