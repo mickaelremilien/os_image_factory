@@ -221,6 +221,7 @@ resources:
             ssh-keygen -t rsa
             cd /home/cloud/
             sudo ansible-playbook /home/cloud/ansibleServer/bootstrap.yml
+            sudo rm -r ansibleServer config
           params:
             $COUNTRY$: { get_param: COUNTRY }
             $PROVINCE$: { get_param: PROVINCE }
