@@ -1,7 +1,7 @@
 heat_template_version: 2013-05-23
 
 
-description: Virtual Private Network Stack Randomwarrior
+description: Virtual Private Network Stack Raod Warrior
 
 
 parameters:
