@@ -1,6 +1,6 @@
-# 5 Minutes Stacks, épisode XX : OpenVPN (site-to-site)  #
+# 5 Minutes Stacks, épisode XX : OpenVPN (RoadWarrior)  #
 
-## Episode XX : OpenVPN (site-to-site)
+## Episode XX : OpenVPN (RoadWarrior)
 
 ![OpenVPNlogo](http://allnightburger.com/wp-content/uploads/2015/12/openvpn-logo.jpg)
 
@@ -12,7 +12,7 @@ Le port par défaut utilisé par OpenVPN est le port UDP 1194, basé sur un assi
 
 ## Descriptions
 
-La stack "vpn(site-to-site)" ée une instance serveur OpenVPN prêt a recevoir des connexion de client distant.
+La stack "vpn(site-to-site)" ée une instance serveur OpenVPN prêt à recevoir des connexion de clients distants.
 
 ## Preparations
 
@@ -61,9 +61,20 @@ Une fois ceci fait, les outils en ligne de commande d'OpenStack peuvent interagi
 
 ### Ajuster les paramètres
 
-Dans le fichier `bundle-trusty-vpn.heat.yml` vous trouverez en haut une section `parameters`. Le seul paramètre obligatoire à ajuster
-est celui nommé `keypair_name` dont la valeur `default` doit contenir le nom d'une paire de clés valide dans votre compte utilisateur.
-C'est dans ce même fichier que vous pouvez ajuster la taille de l'instance par le paramètre `flavor_name`.
+Dans le fichier `bundle-trusty-vpn.heat.yml` vous trouverez en haut une section `parameters`. Les parametres a remplir sont:
+
+* bundle-trusty-vpn-roadwarrior
+
+
+  - `keypair_name` Le nom de votre clé privée.
+  - `flavor_name` La taille de l'instance.( valeur par defaut: n1.cw.standard-1 )
+  - `server_cidr` Le sous reseau local en /24.( valeur par defaut: 10.10.10.0/24 )
+  - `client_cidr` Le sous reseau du client distant en /24.( valeur par defaut: 20.20.20.0/24 )
+  - `COUNTRY` Paramètre COUNTRY du Certificat VPN. ( valeur par defaut: FR )
+  - `CITY`  Paramètre CITY du Certificat VPN.( valeur par defaut: Paris )
+  - `ORGANISATION` Paramètre ORGANISATION du Certificat VPN. ( valeur par defaut: cloudwatt )
+  - `EMAIL`Paramètre EMAIL du Certificat VPN.( valeur par defaut: contact@cloudwatt.com )
+  - `PROVINCE` Paramètre PROVINCE du Certificat VPN.( valeur par defaut: idf )
 
 ~~~ yaml
 heat_template_version: 2013-05-23
@@ -234,12 +245,16 @@ Puis attendez **5 minutes** que le déploiement soit complet.
  11. Choisissez la taille de votre instance parmi le menu déroulant « flavor_name » et cliquez sur « LANCER »
  12. Connectez-vous sur le server et le client Openvpn via ssh en utilisant votre clé ssh avec la commande
  Ssh -i  votre_clé cloud@X.X.X.X (adresse ip de la machine que vous souhaitez joindre)
+ 13. Munissez-vous d'un client SFTP tel que Filezilla ou autre.
+ 14. Ajoutez votre clé dans le clilent SFTP et connectez vous au server OpenVPN.
+ 15. Copier/coller l'archive `/home/cloud/configclient.tar.gz` dans votre repertoire local `/etc/openvpn/`.
+ 16. Decompressez l'archive et dépacez son contenu dans `/etc/openvpn/`. Puis lancer le service OpenVPN avec la commande `sudo service openvpn restart`.
+ 17. Le tunnel OpenVPN est monté.
 
 Le script `start-stack.sh` s'occupe de lancer les appels nécessaires sur les API Cloudwatt pour :
 
-* démarrer 2 instances basées sur Ubnuntu, pré-provisionnée avec la stack OpenVPN.
-* configurer deux noeuds un serveur OpenVPN et un client OpenVPN.
-* monter le tunnel VPN entre ces deux noeuds.
+* démarrer 1 instance basée sur Ubnuntu, pré-provisionnée avec la stack OpenVPN.
+* configurer un noeud un serveur OpenVPN.
 
 ![OpenVPNArchi](http://www.samn0.fr/wp-content/uploads/2011/03/800px-VPN_site-to-site.jpg)
 

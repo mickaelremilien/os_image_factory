@@ -57,7 +57,19 @@ La stack "vpn(site-to-site)"" create an instance, a OpenVPN server ready to reci
 
  ### Adjust the parameters
 
-  With the `bundle-trusty-vpn.heat.yml` file, you will find at the top a section named `parameters`. The sole mandatory parameter to adjust is the one called `keypair_name`. Its `default` value must contain a valid keypair with regards to your Cloudwatt user account. This is within this same file that you can adjust the instance size by playing with the `flavor_name` parameter.
+ * bundle-trusty-vpn-roadwarrior
+
+   With the `bundle-trusty-vpn.heat.yml` file, you will find at the top a section named `parameters`. The parameters which need to be set up are called:
+
+   - `keypair_name`  Its value must contain a valid keypair with regards to your Cloudwatt user account.
+   - `flavor_name`  This is within this same file that you can adjust the instance size by playing with the  parameter. (default value: n1.cw.standard-1 )
+   - `server_cidr`  This is the /24 cidr of local subnet. (default value: 10.10.10.0/24 )
+   - `client_cidr`  This is the /24 cidr of target subnet. (default value: 20.20.20.0/24 )
+   - `COUNTRY`  This is the Certificate VPN parameter COUNTRY. (default value: FR )
+   - `CITY`  This is the Certificate VPN parameter CITY. (default value: Paris )
+   - `ORGANISATION`  This is the Certificate VPN parameter ORGANISATION. (default value: cloudwatt
+   - `EMAIL`  This is the Certificate VPN parameter EMAIL.( default value: contact@cloudwatt.com )
+   - `PROVINCE`  This is the Certificate VPN parameter PROVINCE.(default value: idf )
 
 ~~~ yaml
 heat_template_version: 2013-05-23
@@ -132,25 +144,17 @@ parameters:
     label: SSH Keypair
     type: string
 
-
   flavor_name:
-    default: n2.cw.standard-1
     description: Flavor to use for the deployed instance
     type: string
     label: Instance Type (Flavor)
     constraints:
       - allowed_values:
-        - t1.cw.tiny
-        - s1.cw.small-1
-        - n2.cw.standard-1
-        - n2.cw.standard-2
-        - n2.cw.standard-4
-        - n2.cw.standard-8
-        - n2.cw.standard-16
-        - n2.cw.highmem-2
-        - n2.cw.highmem-4
-        - n2.cw.highmem-8
-        - n2.cw.highmem-12
+        - n1.cw.standard-1
+        - n1.cw.standard-2
+        - n1.cw.standard-4
+    default:  n1.cw.standard-1
+
 [...]
 ~~~
 
@@ -224,6 +228,12 @@ Then wait for **5 minutes** that the deployement have been completed.
  11. Choose the size of your instance among the up and down menu  « flavor_name » and click on « Launch »
  12. connect yourself on the server and the client OpenVPN by ssh using your ssh key with the following command
  Ssh -i  your_key cloud@X.X.X.X (ip adress of the instance that you want to join)
+ 13. Get a SFTP Client (like Filezilla) or any other.
+ 14. Add your key in the SFTP Client and Connect yourself on the Openvpn Server.
+ 15. drag and drop the archive `/home/cloud/configclient.tar.gz` in `/etc/openvpn/`.
+ 16. unarchive the file move all files and dicrectory in the directory `/etc/openvpn/`.  launch openvpn on the with the command `sudo service openvpn restart`.
+ 17. The OpenVPN tunnel is set up.
+
 
 Le script `start-stack.sh` handles launch the necessary calls to the API Cloudwatt :
 
@@ -243,54 +253,32 @@ You will have a fully isolated network that can nevertheless communicate through
 You can view the stack output parameters in the console
 by clicking: Stack → name of your stack → The Overview tab
 
-The outputs of the stack are:
-
-- Server_id (id of the instance vpn server)
-- Floating_ip_server (public IP associated with the vpn server)
-- Security_group_id (id of the security group)
-- Server_private_ip (private IP address of the VPN server)
-- Subnet_server_id (network under the id associated with the vpn server)
-- Network_server_id (id associated to the private network vpn server)
 
 ~~~ bash
-$ heat stack-show OpenVPN
+The outputs of the stack on the Server side are:
+
+ - Floating_ip_server ( public IP associated with the vpn server )
+ - Server_private_ip ( private IP address of the VPN server)
+
+
+~~~ bash
+$ heat stack-show RoadWarrior
 +-----------------------+---------------------------------------------------+
 | Property              | Value                                             |
 +-----------------------+---------------------------------------------------+
 |                     [...]                                                 |
 | outputs               | [                                                 |
 |                       |   {                                               |
-|                       |     "output_value": "10.0.1.100",                 |
-|                       |     "description": "server3 private IP address",  |
-|                       |     "output_key": "server3_private_ip"            |
-|                       |   },                                              |
-|                       |   {                                               |
-|                       |     "output_value": "10.0.1.102",                 |
-|                       |     "description": "server1 private IP address",  |
-|                       |     "output_key": "server1_private_ip"            |
-|                       |   },                                              |
-|                       |   {                                               |
-|                       |     "output_value": "XX.XX.XX.XX",                |
-|                       |     "description": "server3 public IP address",   |
-|                       |     "output_key": "server3_public_ip"             |
+|                       |     "output_value": "10.10.10.100",               |
+|                       |     "description": "server private IP address",   |
+|                       |     "output_key": "server_private_ip"             |
 |                       |   },                                              |
 |                       |   {                                               |
 |                       |     "output_value": "YY.YY.YY.YY",                |
 |                       |     "description": "server1 public IP address",   |
 |                       |     "output_key": "server1_public_ip"             |
-|                       |   },                                              |
-|                       |   {                                               |
-|                       |     "output_value": "10.0.1.103",                 |
-|                       |     "description": "server2 private IP address",  |
-|                       |     "output_key": "server2_private_ip"            |
-|                       |   },                                              |
-|                       |   {                                               |
-|                       |     "output_value": "ZZ.ZZ.ZZ.ZZ",                |
-|                       |     "description": "server2 public IP address",   |
-|                       |     "output_key": "server2_public_ip"             |
-|                       |   }                                               |
-|                       | ]                                                 |
-|                     [...]                                                 |
+|                       |   },                                              |                       |                       |  ]                                                |
+|                       |    [...]                                          |
 +-----------------------+---------------------------------------------------+
 ~~~
 
@@ -384,6 +372,7 @@ ssh -i your_key cloud@<node-ip@>
 
 * [OpenVPN Homepage](https://openvpn.net/)
 * [Ubuntu OpenVPN Homepage](https://doc.ubuntu-fr.org/openvpn)
+* []
 * to mount the VPN tunnel between  remote instances you have to copy the archive configclient.tar.gz on them, to install the Openvpn client and to copy the archive in the `/etc/openvpn` folder, unarchive it, replace the server address in the client.conf file and finally start the openvpn service.
 
 

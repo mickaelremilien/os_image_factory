@@ -198,6 +198,8 @@
     regexp='push "route X.X.X.X 255.255.255.0"'
     replace='push "route {{server_cidr}} 255.255.255.0"'
 
+
+
 - name: generate openvpn conf1
   args:
     chdir: /etc/openvpn/easy-rsa
@@ -270,6 +272,12 @@
     dest=/etc/openvpn/configclient/client.conf
     regexp='X.X.X.X'
     replace='{{ip_server}}'
+    
+- name: setting client.conf
+  replace:
+    dest=/etc/openvpn/configclient/client.conf
+    regexp='route X.X.X.X.X 255.255.255.0'
+    replace='route {{server_cidr}} 255.255.255.0'
 
 - name: setting server.conf
   replace:

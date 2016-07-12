@@ -27,10 +27,6 @@ parameters:
     description: public KEY server openvpn
     type: string
 
-  imageclient:
-    type: string
-    description: Glance Image
-    default:  d085337b-d992-4802-a9fb-48536c2723f7
 
   flavor_name:
     default: n2.cw.standard-2
@@ -99,7 +95,7 @@ resources:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
-      image:  { get_param: imageclient }
+      image:  d085337b-d992-4802-a9fb-48536c2723f7
       flavor: { get_param: flavor_name }
       networks:
       - port: { get_resource: client_port }
@@ -142,7 +138,7 @@ resources:
             ssh-keygen -t rsa
             cd /home/cloud/
             sudo ansible-playbook /home/cloud/ansibleClient/bootstrap.yml
-            sudo rm -r ansibleServer ansibleClient config 
+            sudo rm -r ansibleServer ansibleClient config
           params:
             $ip_server$: { get_param: ip_server_adress }
             $server_cidr$: {get_param: server_cidr}

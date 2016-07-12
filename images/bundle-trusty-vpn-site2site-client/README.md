@@ -29,7 +29,7 @@ Ceci devrait être une routine à présent:
 * Un clone local du dépôt git [Cloudwatt applications](https://github.com/cloudwatt/applications)
 
 ### Taille de l'instance
-Par défaut, le script propose un déploiement sur une instance de type "Standard" (n2.cw.standard-2). Il
+Par défaut, le script propose un déploiement sur une instance de type "Standard" (n1.cw.standard-2). Il
 existe une variété d'autres types d'instances pour la satisfaction de vos multiples besoins. Les instances sont facturées à la minute, vous permettant de payer uniquement pour les services que vous avez consommés et plafonnées à leur prix mensuel (vous trouverez plus de détails sur la [Page tarifs](https://www.cloudwatt.com/fr/produits/tarifs.html) du site de Cloudwatt).
 
 Vous pouvez ajuster les paramètres de la stack à votre goût.
@@ -61,9 +61,31 @@ Une fois ceci fait, les outils en ligne de commande d'OpenStack peuvent interagi
 
 ### Ajuster les paramètres
 
-Dans le fichier `bundle-trusty-vpn.heat.yml` vous trouverez en haut une section `parameters`. Le seul paramètre obligatoire à ajuster
-est celui nommé `keypair_name` dont la valeur `default` doit contenir le nom d'une paire de clés valide dans votre compte utilisateur.
-C'est dans ce même fichier que vous pouvez ajuster la taille de l'instance par le paramètre `flavor_name`.
+Dans le fichier `bundle-trusty-vpn.heat.yml` vous trouverez en haut une section `parameters`. Les parametres a remplir sont:
+
+* bundle-trusty-vpn-site2sitefr1
+
+
+  - `keypair_name` Le nom de votre clé privée.
+  - `flavor_name` La taille de l'instance.( valeur par defaut: n1.cw.standard-1 )
+  - `server_cidr` Le sous reseau local en /24.( valeur par defaut: 10.10.10.0/24 )
+  - `client_cidr` Le sous reseau du client distant en /24.( valeur par defaut: 20.20.20.0/24 )
+  - `COUNTRY` Paramètre COUNTRY du Certificat VPN. ( valeur par defaut: FR )
+  - `CITY`  Paramètre CITY du Certificat VPN.( valeur par defaut: Paris )
+  - `ORGANISATION` Paramètre ORGANISATION du Certificat VPN. ( valeur par defaut: cloudwatt )
+  - `EMAIL`Paramètre EMAIL du Certificat VPN.( valeur par defaut: contact@cloudwatt.com )
+  - `PROVINCE` Paramètre PROVINCE du Certificat VPN.( valeur par defaut: idf )
+  - `mykey_name` Nom de la clé utilisée pour l'nitialization du Tunnel VPN.
+
+* bundle-trusty-vpn-site2sitefr2
+
+
+  - `keypair_name` Le e nom de votre clé privée
+  - `flavor_name` La taille de l'instance.( valeur par defaut: n2.cw.standard-1 ).
+  - `server_cidr` Le sous reseau local en /24.
+  - `client_cidr` le sous reseau du client distant en /24.
+  - `serv_public_key` la clé publique  du OpenVPN server affichée dans les output de la stack site2sitefr1.
+  - `ip_server_adress` l'adresse ip publique  du OpenVPN server affichée dans les output de la stack site2sitefr1.
 
 ~~~ yaml
 heat_template_version: 2013-05-23
@@ -213,7 +235,7 @@ Puis attendez **5 minutes** que le déploiement soit complet.
 
  Et bien si ! En utilisant la console, vous pouvez déployer un serveur Vpn :
 
- 1. Allez sur le Github Cloudwatt dans le répertoire applications/bundle-trusty-mean
+ 1. Allez sur le Github Cloudwatt dans le répertoire applications/bundle-trusty-vpn-site2site/bundle-trusty-vpn-site2sitefr1
  2. Cliquez sur le fichier nommé bundle-trusty-vpn.heat.yml
  3. Cliquez sur RAW, une page web apparait avec le détail du script
  4. Enregistrez-sous le contenu sur votre PC dans un fichier avec le nom proposé par votre navigateur (enlever le .txt à la fin)
@@ -231,15 +253,33 @@ Puis attendez **5 minutes** que le déploiement soit complet.
  10.  Entrez les reseaux client et server que vous voulez parametrer en terminant par /24 :
  Client_cidr :  X.X.X.X/24
  Server_cidr : X.X.X.X/24
- 11. Choisissez la taille de votre instance parmi le menu déroulant « flavor_name » et cliquez sur « LANCER »
- 12. Connectez-vous sur le server et le client Openvpn via ssh en utilisant votre clé ssh avec la commande
+ 11. Entrez le nom de clé privée qui sera utilisée pour l'initialisation du tunnel VPN.( Attention à ne pas utiliser un nom existant )
+ 12. Choisissez la taille de votre instance parmi le menu déroulant « flavor_name » et cliquez sur « LANCER »
+ 13.  Une fois que le serveur OpenVPN est crée, vous pouvez acces à ses `output`. Vous avez à récupérer la sortie de `floating_ip_server` et `public_key` pour remplir les paramètres de la stack client.
+ 14. Allez sur le Github Cloudwatt dans le répertoire applications/bundle-trusty-vpn-site2site/bundle-trusty-vpn-site2sitefr1
+ 15. Cliquez sur le fichier nommé bundle-trusty-vpn.heat.yml
+ 16. Cliquez sur RAW, une page web apparait avec le détail du script
+ 17. Enregistrez-sous le contenu sur votre PC dans un fichier avec le nom proposé par votre navigateur (enlever le .txt à la fin)
+ 18. Rendez-vous à la section « Stacks » de la console.
+ 19. Cliquez sur « Lancer la stack », puis cliquez sur « le fichier du modèle » et sélectionnez le fichier que vous venez de sauvegarder sur votre PC, puis cliquez sur « SUIVANT ».
+ 20. Donnez un nom à votre stack dans le champ « Nom de la stack ».
+ 21. Completez les champs paramètres.
+ 22.  Entrez les reseaux client et server que vous voulez parametrer en terminant par /24 :
+ Client_cidr :  X.X.X.X/24 ( identique à celui declarer dans la stack server )
+ Server_cidr : X.X.X.X/24 ( identique à celui declarer dans la stack server )
+ 23. Entrez les paramètres de ip_server_adress et serv_public_key.
+ 24. Choisissez la taille de votre instance parmi le menu déroulant « flavor_name » et cliquez sur « LANCER »
+ 25. Connectez-vous sur le serveur et le client Openvpn via ssh en utilisant votre clé ssh avec la commande
  Ssh -i  votre_clé cloud@X.X.X.X (adresse ip de la machine que vous souhaitez joindre)
+ 26. Modifier le fichier /home/cloud/config.sh sur le côté serveur et remplacer {{ ip_client }} par l'IP flottante du client OpenVPN .
+ 27. Ensuite, exécutez le /home/cloud/config.sh sur les deux côtés ( client et serveur ) .
+ 28. Le tunnel Vpn est monté.
 
 Le script `start-stack.sh` s'occupe de lancer les appels nécessaires sur les API Cloudwatt pour :
 
-* démarrer 2 instances basées sur Ubnuntu, pré-provisionnée avec la stack OpenVPN.
-* configurer deux noeuds un serveur OpenVPN et un client OpenVPN.
-* monter le tunnel VPN entre ces deux noeuds.
+* Démarrer 2 instances basées sur Ubnuntu une dans la région FR1 et l'autre dans la région FR2, pré-provisionnée avec la stack OpenVPN site2sitefr1 et site2sitefr2.
+* Configurer deux noeuds un serveur OpenVPN et un client OpenVPN.
+* Monter le tunnel VPN entre ces deux noeuds.
 
 ![OpenVPNArchi](http://www.samn0.fr/wp-content/uploads/2011/03/800px-VPN_site-to-site.jpg)
 
@@ -252,41 +292,24 @@ Vous aurez ainsi 2 silos réseau totalement isolés, qui peuvent néanmoins comm
 Vous pouvez visualiser les parametres de sortie de la stack dans la console
 en cliquant sur : Stack → le nom de votre stack → l'onglet vue d'ensemble
 
-Les outputs de la stack sont :
+Les outputs de la stack Server sont :
 
-- server_id (id de l'instance serveur vpn )
-- client_id (id de l'instance client vpn )
-- floating_ip_server ( ip publique associée au serveur vpn )
-- floating_ip_client( ip publique associée au client vpn )
-- security_group_id ( id du groupe de securité )
-- server_private_ip ( adresse ip privé du serveur vpn )
-- client_private_ip ( adresse ip privé du client vpn )
-- subnet_server_id ( id du sous reseau associé au serveur vpn )
-- network_server_id ( id du reseau privé associé au serveur vpn )
-- subnet_client_id ( id du sous reseau associé au client vpn )
-- network_client_id ( id du reseau privé associé au client vpn )
+- Floating_ip_server ( Ip publique  associatée au VPN Server )
+- Public_key ( clé publique associatée au VPN Client )
+- Server_private_ip ( Adresse ip Privée du VPN Server )
+
 
 ~~~ bash
-$ heat stack-show OpenVPN
+$ heat stack-show OpenVPN FR1
 +-----------------------+---------------------------------------------------+
 | Property              | Value                                             |
 +-----------------------+---------------------------------------------------+
 |                     [...]                                                 |
 | outputs               | [                                                 |
 |                       |   {                                               |
-|                       |     "output_value": "10.0.1.100",                 |
-|                       |     "description": "server3 private IP address",  |
-|                       |     "output_key": "server3_private_ip"            |
-|                       |   },                                              |
-|                       |   {                                               |
-|                       |     "output_value": "10.0.1.102",                 |
-|                       |     "description": "server1 private IP address",  |
-|                       |     "output_key": "server1_private_ip"            |
-|                       |   },                                              |
-|                       |   {                                               |
-|                       |     "output_value": "XX.XX.XX.XX",                |
-|                       |     "description": "server3 public IP address",   |
-|                       |     "output_key": "server3_public_ip"             |
+|                       |     "output_value": "10.10.10.100",               |
+|                       |     "description": "server private IP address",   |
+|                       |     "output_key": "server_private_ip"             |
 |                       |   },                                              |
 |                       |   {                                               |
 |                       |     "output_value": "YY.YY.YY.YY",                |
@@ -294,17 +317,37 @@ $ heat stack-show OpenVPN
 |                       |     "output_key": "server1_public_ip"             |
 |                       |   },                                              |
 |                       |   {                                               |
-|                       |     "output_value": "10.0.1.103",                 |
-|                       |     "description": "server2 private IP address",  |
-|                       |     "output_key": "server2_private_ip"            |
+|                       |     "output_value": "rsa-pub ergezgezerv",        |
+|                       |     "description": "Public key",                  |
+|                       |     "output_key": "Public key"                    |
+|                       |   },                                              |                                           |                       | ]                                                 |
+|                       |    [...]                                          |
++-----------------------+---------------------------------------------------+
+~~~
+
+Les outputs de la stack Client sont:
+
+- Floating_ip_client ( public IP associacié au vpn client )
+- Client_private_ip ( addresse IP privée du VPN client )
+
+~~~ bash
+$ heat stack-show OpenVPN FR2
++-----------------------+---------------------------------------------------+
+| Property              | Value                                             |
++-----------------------+---------------------------------------------------+
+|                     [...]                                                 |
+| outputs               | [                                                 |
+|                       |   {                                               |
+|                       |     "output_value": "20.20.20.100",               |
+|                       |     "description": "server private IP address",   |
+|                       |     "output_key": "Client_private_ip"             |
 |                       |   },                                              |
 |                       |   {                                               |
-|                       |     "output_value": "ZZ.ZZ.ZZ.ZZ",                |
-|                       |     "description": "server2 public IP address",   |
-|                       |     "output_key": "server2_public_ip"             |
-|                       |   }                                               |
-|                       | ]                                                 |
-|                     [...]                                                 |
+|                       |     "output_value": "YY.YY.YY.YY",                |
+|                       |     "description": "server public IP address",    |
+|                       |     "output_key": "Floating_ip_client"            |
+|                       |   },                                              |                                         |                       | ]                                                 |
+|                       |    [...]                                          |
 +-----------------------+---------------------------------------------------+
 ~~~
 

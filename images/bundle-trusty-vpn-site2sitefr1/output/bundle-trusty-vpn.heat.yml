@@ -8,7 +8,7 @@ parameters:
 
   mykey_name:
     description: Keypair to inject in instance
-    label: SSH Keypair
+    label: SSH MaKeypair
     type: string
 
   server_cidr:
@@ -25,7 +25,6 @@ parameters:
     description: COUNTRY for the VPN certificate
     label: certificate VPN COUNTRY
     type: string
-    hidden: true
     constraints:
       - length: { min: 1, max: 2 }
         description: COUNTRY must be between 1 and 2 characters
@@ -35,7 +34,6 @@ parameters:
     description: PROVINCE for the VPN certificate
     label: certificate VPN PROVINCE
     type: string
-    hidden: true
     constraints:
       - length: { min: 1, max: 40 }
         description: PROVINCE must be between 1 and 40 characters
@@ -45,7 +43,6 @@ parameters:
     description: CITY for the VPN certificate
     label: certificate VPN CITY
     type: string
-    hidden: true
     constraints:
       - length: { min: 1, max: 40 }
         description: CITY must be between 1 and 40 characters
@@ -55,7 +52,6 @@ parameters:
     description: ORGANISATION for the VPN certificate
     label: certificate VPN ORGANISATION
     type: string
-    hidden: true
     constraints:
       - length: { min: 1, max: 40 }
         description: ORGANISATION must be between 1 and 40 characters
@@ -65,7 +61,6 @@ parameters:
     description: EMAIL for the VPN certificate
     label: certificate VPN EMAIL
     type: string
-    hidden: true
     constraints:
       - length: { min: 1, max: 40 }
         description:  EMAIL must be between 1 and 40 characters
@@ -76,11 +71,6 @@ parameters:
     label: SSH Keypair
     type: string
     default: mickael
-
-  imageserver:
-    type: string
-    description: Glance Image
-    default:  3f504144-cc7f-4072-b161-09ecc0e6e5ff
 
   flavor_name:
     description: Flavor to use for the deployed instance
@@ -155,7 +145,7 @@ resources:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
-      image:  { get_param: imageserver }
+      image:  3f504144-cc7f-4072-b161-09ecc0e6e5ff
       flavor: { get_param: flavor_name }
       networks:
       - port: { get_resource: server_port }
@@ -208,7 +198,7 @@ resources:
             sudo chown -R cloud:cloud /home/cloud/config/
             sudo ansible-playbook /home/cloud/ansibleServer/bootstrap.yml
             sudo sed -i 's/{{ma_key}}/$mykey_name$/g' /home/cloud/config.sh
-            sudo rm -r ansibleServer ansibleClient config 
+            sudo rm -r ansibleServer ansibleClient config
           params:
             $COUNTRY$: { get_param: COUNTRY }
             $PROVINCE$: { get_param: PROVINCE }

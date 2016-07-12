@@ -66,11 +66,6 @@ parameters:
         description:  EMAIL must be between 1 and 40 characters
     default: contact@cloudwatt.com
 
-  imageserver:
-    type: string
-    description: Glance Image
-    default: 3451985b-0960-4cbf-8adb-dce4e15a13a1
-
   keypair_name:
     description: Keypair to inject in instance
     label: SSH Keypair
@@ -113,30 +108,6 @@ resources:
         - destination: 0.0.0.0/0
           nexthop: { "Fn::Replace": [ {'.0/24': '.1'}, {get_param: server_cidr} ] }
 
-  network2:
-    type: OS::Neutron::Net
-
-
-  subnet2:
-    type: OS::Neutron::Subnet
-    properties:
-      network_id: { get_resource: network2 }
-      ip_version: 4
-      cidr: { get_param: client_cidr }
-
-  security_group_client:
-    type: OS::Neutron::SecurityGroup
-    properties:
-      rules:
-        - { direction: ingress, protocol: TCP, port_range_min: 22, port_range_max: 22 }
-        - { direction: ingress, protocol: TCP, port_range_min: 80, port_range_max: 80 }
-        - { direction: ingress, protocol: TCP, port_range_min: 443, port_range_max: 443 }
-        - { direction: ingress, protocol: UDP, port_range_min: 1194, port_range_max: 1194 }
-        - { direction: ingress, protocol: ICMP }
-        - { direction: egress, protocol: ICMP }
-        - { direction: egress, protocol: TCP }
-        - { direction: egress, protocol: UDP }
-        - { direction: egress, protocol: UDP, port_range_min: 1194, port_range_max: 1194 }
 
   security_group:
     type: OS::Neutron::SecurityGroup
@@ -155,7 +126,6 @@ resources:
   floating_ip:
     type: OS::Neutron::FloatingIP
     properties:
-      #floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
       floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
       port_id: { get_resource: server_port }
 
@@ -179,7 +149,7 @@ resources:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
-      image:  { get_param: imageserver }
+      image:  3451985b-0960-4cbf-8adb-dce4e15a13a1
       flavor: { get_param: flavor_name }
       networks:
       - port: { get_resource: server_port }
@@ -250,19 +220,3 @@ outputs:
   floating_ip:
     description: IP address of the deployed compute server
     value: { get_attr: [floating_ip, floating_ip_address] }
-
-  server_id:
-    description: ID of the server
-    value: {get_resource: server}
-
-  security_group_id:
-    description: ID of the security group associate to the server
-    value: {get_resource: security_group}
-
-  subnet_server_id:
-    description: ID of the private subnet associate to the server
-    value: {get_resource: subnet}
-
-  network_server_id:
-    description: ID of the private network associate to the server
-    value: {get_resource: network}
