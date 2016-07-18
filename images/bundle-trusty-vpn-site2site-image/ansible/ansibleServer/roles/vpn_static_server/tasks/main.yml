@@ -281,6 +281,19 @@
     sudo cp ca.crt configclient
     mv client.conf configclient
     rm client.conf
+
+- name: setting client.conf
+  replace:
+    dest=/etc/openvpn/configclient/client.conf
+    regexp='route Y.Y.Y.Y 255.255.255.0'
+    replace='route {{server_cidr}} 255.255.255.0'
+
+
+- name: pack config client
+  args:
+    chdir: /etc/openvpn/
+    executable: /bin/bash
+  shell: |    
     tar czvf configclient.tar.gz configclient
     sudo rm -r configclient
     chown cloud configclient.tar.gz
