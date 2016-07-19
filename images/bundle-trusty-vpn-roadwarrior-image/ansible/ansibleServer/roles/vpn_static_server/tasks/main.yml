@@ -304,13 +304,6 @@
     regexp='#AUTOSTART="all"'
     replace='AUTOSTART="all"'
 
-- name: change ownership and right my_key.pem
-  file:
-    path=/home/cloud/.ssh/my_key.pem
-    owner=cloud
-    group=cloud
-    mode=600
-
 - name: iptablenat
   args:
     chdir: /home/cloud

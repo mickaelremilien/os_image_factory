@@ -6,15 +6,10 @@ description: Virtual Private Network Stack Raod Warrior
 
 parameters:
 
-  # client_cidr:
-  #   description: /24 cidr of local subnet
-  #   type: string
-  #   default:  20.20.20.0/24
-
   server_cidr:
     description: /24 cidr of local subnet
     type: string
-    default:  10.10.10.0/24
+    default:  20.10.10.0/24
 
   COUNTRY:
     description: COUNTRY for the VPN certificate
@@ -136,7 +131,7 @@ resources:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
-      image:  126fbfb5-2e77-46d9-af55-626453ad89c6
+      image:  9f486a46-cb74-4d27-bb92-317b78ea7690
       flavor: { get_param: flavor_name }
       networks:
       - port: { get_resource: server_port }
