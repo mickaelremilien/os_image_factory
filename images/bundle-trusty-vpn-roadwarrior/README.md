@@ -12,7 +12,7 @@ Le port par défaut utilisé par OpenVPN est le port UDP 1194, basé sur un assi
 
 ## Descriptions
 
-La stack "vpn(site-to-site)" ée une instance serveur OpenVPN prêt à recevoir des connexion de clients distants.
+La stack "OpenVPN (RoadWarrior)" ée une instance serveur OpenVPN prêt à recevoir des connexion de clients distants.
 
 ## Preparations
 
