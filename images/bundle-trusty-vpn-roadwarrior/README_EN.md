@@ -1,6 +1,6 @@
-# 5 Minutes Stacks, épisode XX : OpenVPN (site-to-site)  #
+# 5 Minutes Stacks, épisode XX : OpenVPN (RoadWarrior)  #
 
-## Episode XX : OpenVPN (site-to-site)
+## Episode XX : OpenVPN (RoadWarrior)
 
 ![OpenVPNlogo](http://allnightburger.com/wp-content/uploads/2015/12/openvpn-logo.jpg)
 
