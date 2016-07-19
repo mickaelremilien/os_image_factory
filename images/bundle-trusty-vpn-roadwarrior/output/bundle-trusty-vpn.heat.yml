@@ -131,7 +131,7 @@ resources:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: keypair_name }
-      image:  9f486a46-cb74-4d27-bb92-317b78ea7690
+      image:  2f321e3b-bfa6-44ad-bf68-9aa0e1b6bff1
       flavor: { get_param: flavor_name }
       networks:
       - port: { get_resource: server_port }
@@ -144,8 +144,6 @@ resources:
             sudo mkdir /home/cloud/config
             sudo chown -R cloud:cloud /home/cloud/config
             echo -n "$ip_server$" >> /home/cloud/config/ip_server
-            # echo -n "$ssh_key_priv$" >> /home/cloud/.ssh/my_key.pem
-            # echo -n "$ssh_key_pub$" >> /home/cloud/.ssh/authorized_keys
             echo -n "$server_cidr$" >> /home/cloud/config/server_cidr
             sed 's/\(.*\)\/.*/\1/' < /home/cloud/config/server_cidr > /home/cloud/config/server_cidr.tmp
             cp /home/cloud/config/server_cidr /home/cloud/config/server_cidr_gw.tmp

@@ -4,13 +4,13 @@ parameters:
   imageweb:
     type: string
     description: Glance Image
-    default: 98972e98-936a-4385-92f4-bef555fc171c
-
+    #default: 98972e98-936a-4385-92f4-bef555fc171c
+    default: 77fa8e29-02a1-42d2-9b14-a7a114670c21
   imagemy:
     type: string
     description: Glance Image
+    #default: 47d1ebd8-519e-4ad6-8317-a5605abdfcf6
     default: 47d1ebd8-519e-4ad6-8317-a5605abdfcf6
-
   image:
     type: string
     description: Glance Image
