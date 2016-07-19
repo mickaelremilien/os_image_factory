@@ -12,7 +12,7 @@ The port(bearing) by default used by OpenVPN is the port(bearing) UDP 1194, base
 
 ## Descriptions
 
-La stack "vpn(site-to-site)"" create an instance, a OpenVPN server ready to recieive connexion from remote client.
+La stack "OpenVPN (RoadWarrior)" create an instance, a OpenVPN server ready to recieive connexion from remote client.
 
 ## Preparations
 
