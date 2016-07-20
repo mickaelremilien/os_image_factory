@@ -171,5 +171,5 @@
     sudo service carbon-cache restart
     sudo service apache2 restart
     sudo service grafana-server restart
-    sudo service collecd restart
+    sudo service collectd restart
     sudo update-rc.d grafana-server defaults 95 10
