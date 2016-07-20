@@ -1,0 +1,18 @@
+- hosts: local
+  user: cloud
+  sudo: true
+
+  tasks:
+
+    - name: apt-get update & upgrade
+      apt: upgrade=full update_cache=yes
+
+    - file: path=/home/cloud/ansibleServer state=directory mode=0755
+
+    - name: copy ansible folder
+      copy:
+        src=ansibleServer/
+        dest=/home/cloud/ansibleServer
+        owner=cloud
+        group=cloud
+        mode=0777
