@@ -70,7 +70,7 @@ parameters:
     description: Keypair to inject in instance
     label: SSH Keypair
     type: string
-    default: mickael
+    
 
   flavor_name:
     description: Flavor to use for the deployed instance

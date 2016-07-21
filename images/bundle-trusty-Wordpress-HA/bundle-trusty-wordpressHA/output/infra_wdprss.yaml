@@ -22,7 +22,6 @@ parameters:
   keypair_name:
     type: string
     description: SSH key
-    default: mickael
 
   themysqlpwd:
     description: Basic auth password for mysql users

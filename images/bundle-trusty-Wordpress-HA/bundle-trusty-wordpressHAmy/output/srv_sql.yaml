@@ -22,7 +22,7 @@ parameters:
   key_name:
     type: string
     description: SSH key
-    default: mickael
+  
 
   volume_size:
     type: number

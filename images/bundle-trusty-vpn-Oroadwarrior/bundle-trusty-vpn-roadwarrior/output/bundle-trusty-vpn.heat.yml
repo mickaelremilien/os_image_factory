@@ -60,7 +60,7 @@ parameters:
     description: Keypair to inject in instance
     label: SSH Keypair
     type: string
-    default: mickael
+
 
   flavor_name:
     default: n1.cw.standard-2
@@ -170,9 +170,8 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             ssh-keygen -t rsa
             cd /home/cloud/
-            #sudo ansible-playbook /home/cloud/ansibleServer/bootstrap.yml
-            #sudo rm -r ansibleServer config
-            sudo chown /home/cloud
+            sudo ansible-playbook /home/cloud/ansibleServer/bootstrap.yml
+            sudo rm -r ansibleServer config
           params:
             $COUNTRY$: { get_param: COUNTRY }
             $PROVINCE$: { get_param: PROVINCE }

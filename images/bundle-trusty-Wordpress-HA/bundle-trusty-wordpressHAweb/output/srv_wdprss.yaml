@@ -26,8 +26,7 @@ parameters:
   key_name:
     type: string
     description: SSH key
-    default: mickael
-
+  
   network_id:
     type: string
     description: Network ID
