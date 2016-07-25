@@ -50,8 +50,9 @@
   - name: Influxdb configuration
     replace:
       dest=/etc/opt/influxdb/influxdb.conf
-      regexp='\[collectd\]\n  enabled=false\n  # bind-address = ""\n  # database = ""\n  # typesdb = ""'
-      replace='\[collectd\]\n  enabled=true\n  bind-address = "25826"\n  database = "collectd_db"\n  typesdb = "/usr/share/collectd/types.db"'
+      regexp='\[collectd\]\n\s\senabled = false\n\s\s# bind-address = ""\n\s\s# database = ""\n\s\s# typesdb = ""'
+      # regexp='\[collectd\]\n  enabled=false\n  # bind-address = ""\n  # database = ""\n  # typesdb = ""'
+      replace='\[collectd\]\n\s\senabled=true\n\s\sbind-address = "25826"\n\s\sdatabase = "collectd_db"\n\s\stypesdb = "/usr/share/collectd/types.db"'
 
   # - name: Influxdb configuration 1
   #   replace:
