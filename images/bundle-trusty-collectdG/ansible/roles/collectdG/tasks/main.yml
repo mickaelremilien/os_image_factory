@@ -1,11 +1,7 @@
 ---
-- hosts: localhost
-  user: cloud
-  become: yes
-
-  tasks:
 
 # Part 1: download packages
+
   - name: Update Upgrade
     apt: update_cache=true upgrade=full
 
@@ -89,6 +85,6 @@
 
   - name: restart influxdb
     service: name=influxdb state=restarted
-    
+
   - name: restart grafana-server
     service: name=grafana-server state=restarte
