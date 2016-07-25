@@ -49,7 +49,7 @@
 
   - name: Collectd configuration 2
     replace:
-      dest=//etc/collectd/collectd.conf
+      dest=/etc/collectd/collectd.conf
       regexp='###</Plugin>'
       replace='</Plugin>'
 
