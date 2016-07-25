@@ -1,175 +1,101 @@
 ---
-#  - name: download packages
-#    args:
-#      #chdir: /etc/openvpn/
-#      executable: /bin/bash
-#    shell: |
-#      sudo apt-get install apache2 libapache2-mod-wsgi graphite-web graphite-carbon -y
-#      sudo echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main" >>  /etc/apt/sources.list
-#      sudo curl https://packagecloud.io/gpg.key | apt-key add -
-#      sudo apt-get update -y
-#      wget https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.3-1463994644_amd64.deb
-#      sudo apt-get install -y adduser libfontconfig
-#      sudo dpkg -i grafana_3.0.3-1463994644_amd64.deb
-#      sudo apt-get update
-#      sudo apt-get install grafana
-#      sudo apt-get install apt-transport-https -y
-#      sudo apt-get install collectd collectd-utils -y
+- hosts: localhost
+  user: cloud
+  become: yes
 
-  # - name: apt-get update & upgrade
-  #   apt:
-  #     upgrade=full
-  #     update_cache=yes
-  #     cache_valid_time=3600
+  tasks:
 
-- name: packages installed
-  apt:
-    pkg={{ item }}
-    state=present
-  with_items:
-    - apache2
-    - libapache2-mod-wsgi
-    - graphite-web
-    - graphite-carbon
+# Part 1: download packages
 
-- name: download packages
-  args:
-    #chdir: /etc/openvpn/
-    executable: /bin/bash
-  shell: |
-    sudo echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy maindeb https://packagecloud.io/grafana/stable/debian/ wheezy main" >>  /etc/apt/sources.list
+  - name: Download collectd
+    apt:
+      pkg={{ item }}
+      state=present
+    with_items:
+      - collectd
 
-  # - name: fr locale generated
-  #   locale_gen: name=fr_FR.UTF-8 state=present
+  - name: Download influxdb
+    get_url:
+      url=https://s3.amazonaws.com/influxdb/influxdb_0.9.3_amd64.deb
+      dest=/home/cloud/
 
-  # - name: apt-get update & upgrade
-  #   apt:
-  #     upgrade=full
-  #     update_cache=yes
-  #     cache_valid_time=3600
+  - name: Add source grafana
+    args:
+      #chdir: /etc/openvpn/
+      executable: /bin/bash
+    shell: |
+      sudo echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' >> /etc/apt/sources.list
+      curl https://packagecloud.io/gpg.key | sudo apt-key add -
 
-- name: dpkg grapfana
-  apt: deb=https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.3-1463994644_amd64.deb
+  - name: Update & Upgrade
+    apt:
+      upgrade=full
+      update_cache=yes
+      cache_valid_time=3600
 
-- name: packages installed
-  apt:
-    pkg={{ item }}
-    state=present
-  with_items:
-    - adduser
-    - libfontconfig
-    - grafana
-    - apt-transport-https
-    - collectd
-    - collectd-utils
+  - name: Download grafana
+    apt:
+      pkg={{ item }}
+      state=present
+    with_items:
+      - apt-transport-https
+      - grafana
 
-- name: configuration Apache pour graphite
-  args:
-    #chdir: /etc/openvpn/
-    executable: /bin/bash
-  shell: |
-    sudo -i
-    a2dissite 000-default
-    cp /usr/share/graphite-web/apache2-graphite.conf /etc/apache2/sites-available
-    a2ensite apache2-graphite
+# Part 2: Configuration
 
-  #- name: setting enable carbon-cache
-- replace:
-    dest=/etc/default/graphite-carbon
-    regexp='CARBON_CACHE_ENABLED=false'
-    replace='CARBON_CACHE_ENABLED=true'
+  - name: Collectd configuration 1
+    replace:
+      dest=/etc/collectd/collectd.conf
+      regexp='#LoadPlugin network'
+      replace='LoadPlugin network'
 
-  #- name: setting enable carbon-cache2
-- replace:
-    dest=/etc/carbon/carbon.conf
-    regexp='ENABLE_LOGROTATION = False'
-    replace='ENABLE_LOGROTATION = True'
+  - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin network>"
+  - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826"
+  - lineinfile: dest=/etc/collectd/collectd.conf line="</Plugin>
 
-  #- name: setting enable carbon-cache3
-- replace:
-    dest=/etc/carbon/carbon.conf
-    regexp='MAX_CREATES_PER_MINUTE = 50'
-    replace='MAX_CREATES_PER_MINUTE = 600'
+  - name: Influxdb configuration 1
+    replace:
+      dest=/etc/opt/influxdb/influxdb.conf
+      regexp='(\[collectd\]\n\t)(enabled = false)'
+      replace='\1enabled=true'
 
-- name:   configuration graphite-carbon
-  args:
-    #chdir: /etc/openvpn/
-    executable: /bin/bash
-  shell: |
-    sudo -i
-    cp /usr/share/doc/graphite-carbon/examples/storage-aggregation.conf.example /etc/carbon/storage-aggregation.conf
+  - name: Influxdb configuration 2
+    replace:
+      dest=/etc/opt/influxdb/influxdb.conf
+      regexp='(\[collectd\]\n\t)(\[enabled = true\]\n\t)(# bind-address = "")'
+      replace='\1\2bind-address = "25826"'
 
-  #- name: setting  graphite-local
-- replace:
-    dest=/etc/graphite/local_settings.py
-    regexp='UNSAFE_DEFAULT'
-    replace='jkfdjlskfjdslkjopelezkmlezakmlza5654trlkre'
+  - name: Influxdb configuration 3
+    replace:
+      dest=/etc/opt/influxdb/influxdb.conf
+      regexp='(\[collectd\]\n\t)(\[enabled=true\]\n\t)(\[bind-address = "25826"\]\n\t)(# database = "")'
+      replace='\1\2\3database = "collectd_db"'
 
-- replace:
-    dest=/etc/graphite/local_settings.py
-    regexp='#SECRET_KEY'
-    replace='SECRET_KEY'
-  #- name: setting  graphite-local2
+  - name: Influxdb configuration 4
+    replace:
+      dest=/etc/opt/influxdb/influxdb.conf
+      regexp='(\[collectd\]\n\t)(\[enabled=true\]\n\t)(\[bind-address = "25826"\]\n\t)(\[database = "collectd_db"\]\n\t)(# typesdb = "")'
+      replace='\1\2\3\4typesdb = "/usr/share/collectd/types.db"'
 
-- replace:
-    dest=/etc/graphite/local_settings.py
-    regexp='#TIME_ZONE'
-    replace='TIME_ZONE'
+  - name: Influxdb configuration 5
+    replace:
+      dest=/etc/opt/influxdb/influxdb.conf
+      regexp='25826'
+      replace='25826'
 
-- replace:
-    dest=/etc/graphite/local_settings.py
-    regexp='America/Los_Angeles'
-    replace='Europe/Paris'
+# Part 3: Starting services
 
-- lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin write_graphite>"
-- lineinfile: dest=/etc/collectd/collectd.conf line="        <Carbon>"
-- lineinfile: dest=/etc/collectd/collectd.conf line="                Host "localhost""
-- lineinfile: dest=/etc/collectd/collectd.conf line="                Port "2003""
-- lineinfile: dest=/etc/collectd/collectd.conf line="                LogSendErrors true"
-- lineinfile: dest=/etc/collectd/collectd.conf line="                Prefix "collectd""
-- lineinfile: dest=/etc/collectd/collectd.conf line="                Postfix "collectd""
-- lineinfile: dest=/etc/collectd/collectd.conf line="                StoreRates false"
-- lineinfile: dest=/etc/collectd/collectd.conf line="                AlwaysAppendDS false"
-- lineinfile: dest=/etc/collectd/collectd.conf line="                EscapeCharacter "_""
-- lineinfile: dest=/etc/collectd/collectd.conf line="        </Carbon>"
-- lineinfile: dest=/etc/collectd/collectd.conf line="##</Plugin>"
+  - name: start collectd
+    service:
+      name=collectd
+      state=restarted
 
-- replace:
-    dest=//etc/collectd/collectd.conf
-    regexp='##</Plugin>'
-    replace='</Plugin>'
+  - name: start influxdb
+    service:
+      name=influxdb
+      state=restarted
 
-# - name: download plugings
-#   args:
-#     #chdir: /etc/openvpn/
-#     executable: /bin/bash
-#   shell: |
-#     sudo grafana-cli plugins install grafana-piechart-panel
-#     sudo grafana-cli plugins install opennms-datasource
-#     sudo grafana-cli plugins install bosun-app
-#     sudo grafana-cli plugins install raintank-worldping-app
-#     sudo grafana-cli plugins install raintank-snap-app
-#     sudo grafana-cli plugins install grafana-example-app
-#     sudografana-cli plugins install grafana-clock-panel
-#     sudo grafana-cli plugins install alexanderzobnin-zabbix-app
-#     sudo grafana-cli plugins install fastweb-openfalcon-datasource
-#     sudo grafana-cli plugins install stagemonitor-elasticsearch-app
-#     sudo grafana-cli plugins install grafana-influxdb-08-datasource
-#     sudo grafana-cli plugins install mtanda-histogram-panel
-#     sudo grafana-cli plugins install udoprog-heroic-datasource
-#     sudo grafana-cli plugins install grafana-simple-json-datasource
-#     sudo grafana-cli plugins install grafana-kairosdb-datasource
-#     sudo grafana-cli plugins install ns1-app
-
-- name: demarrage services
-  args:
-    #chdir: /etc/openvpn/
-    executable: /bin/bash
-  shell: |
-    graphite-manage syncdb --noinput
-    sudo chown _graphite:_graphite /var/lib/graphite/graphite.db
-    sudo service carbon-cache restart
-    sudo service apache2 restart
-    sudo service grafana-server restart
-    sudo service collectd restart
-    sudo update-rc.d grafana-server defaults 95 10
+  - start grafana
+    service:
+      name=grafana-server
+      state=restarted
