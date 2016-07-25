@@ -45,12 +45,12 @@
 
   - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin network>"
   - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826""
-  - lineinfile: dest=/etc/collectd/collectd.conf line="##</Plugin>"
+  - lineinfile: dest=/etc/collectd/collectd.conf line="###</Plugin>"
 
   - name: Collectd configuration 2
     replace:
       dest=//etc/collectd/collectd.conf
-      regexp='##</Plugin>'
+      regexp='###</Plugin>'
       replace='</Plugin>'
 
   - name: Influxdb configuration
