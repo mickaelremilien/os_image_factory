@@ -15,7 +15,7 @@
   - name: Download influxdb
     apt:
       deb=https://s3.amazonaws.com/influxdb/influxdb_0.9.3_amd64.deb
-      
+
   - name: Add source grafana
     args:
       #chdir: /etc/openvpn/
@@ -47,35 +47,41 @@
   - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826""
   - lineinfile: dest=/etc/collectd/collectd.conf line="</Plugin>"
 
-  - name: Influxdb configuration 1
+  - name: Influxdb configuration 
     replace:
       dest=/etc/opt/influxdb/influxdb.conf
-      regexp='(\[collectd\]\n\t)(enabled = false)'
-      replace='\1enabled=true'
+      regexp='\[collectd\]\n\tenabled=false\n\t# bind-address = ""\n\t# database = ""\n\t# typesdb = ""'
+      replace='\[collectd\]\n\tenabled=true\n\tbind-address = "25826"\n\tdatabase = "collectd_db"\n\ttypesdb = "/usr/share/collectd/types.db"'
 
-  - name: Influxdb configuration 2
-    replace:
-      dest=/etc/opt/influxdb/influxdb.conf
-      regexp='(\[collectd\]\n\t)(\[enabled = true\]\n\t)(# bind-address = "")'
-      replace='\1\2bind-address = "25826"'
-
-  - name: Influxdb configuration 3
-    replace:
-      dest=/etc/opt/influxdb/influxdb.conf
-      regexp='(\[collectd\]\n\t)(\[enabled=true\]\n\t)(\[bind-address = "25826"\]\n\t)(# database = "")'
-      replace='\1\2\3database = "collectd_db"'
-
-  - name: Influxdb configuration 4
-    replace:
-      dest=/etc/opt/influxdb/influxdb.conf
-      regexp='(\[collectd\]\n\t)(\[enabled=true\]\n\t)(\[bind-address = "25826"\]\n\t)(\[database = "collectd_db"\]\n\t)(# typesdb = "")'
-      replace='\1\2\3\4typesdb = "/usr/share/collectd/types.db"'
-
-  - name: Influxdb configuration 5
-    replace:
-      dest=/etc/opt/influxdb/influxdb.conf
-      regexp='25826'
-      replace=':25826'
+  # - name: Influxdb configuration 1
+  #   replace:
+  #     dest=/etc/opt/influxdb/influxdb.conf
+  #     regexp='(\[collectd\]\n\t)(enabled = false)'
+  #     replace='\1enabled=true'
+  #
+  # - name: Influxdb configuration 2
+  #   replace:
+  #     dest=/etc/opt/influxdb/influxdb.conf
+  #     regexp='(\[collectd\]\n\t)(\[enabled = true\]\n\t)(# bind-address = "")'
+  #     replace='\1\2bind-address = "25826"'
+  #
+  # - name: Influxdb configuration 3
+  #   replace:
+  #     dest=/etc/opt/influxdb/influxdb.conf
+  #     regexp='(\[collectd\]\n\t)(\[enabled=true\]\n\t)(\[bind-address = "25826"\]\n\t)(# database = "")'
+  #     replace='\1\2\3database = "collectd_db"'
+  #
+  # - name: Influxdb configuration 4
+  #   replace:
+  #     dest=/etc/opt/influxdb/influxdb.conf
+  #     regexp='(\[collectd\]\n\t)(\[enabled=true\]\n\t)(\[bind-address = "25826"\]\n\t)(\[database = "collectd_db"\]\n\t)(# typesdb = "")'
+  #     replace='\1\2\3\4typesdb = "/usr/share/collectd/types.db"'
+  #
+  # - name: Influxdb configuration 5
+  #   replace:
+  #     dest=/etc/opt/influxdb/influxdb.conf
+  #     regexp='25826'
+  #     replace=':25826'
 
 # Part 3: Starting services
 
