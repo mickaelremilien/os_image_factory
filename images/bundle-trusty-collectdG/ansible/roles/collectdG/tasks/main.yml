@@ -13,10 +13,9 @@
       - collectd
 
   - name: Download influxdb
-    get_url:
-      url=https://s3.amazonaws.com/influxdb/influxdb_0.9.3_amd64.deb
-      dest=/home/cloud/
-
+    apt:
+      deb=https://s3.amazonaws.com/influxdb/influxdb_0.9.3_amd64.deb
+      
   - name: Add source grafana
     args:
       #chdir: /etc/openvpn/
