@@ -6,6 +6,8 @@
   tasks:
 
 # Part 1: download packages
+  - name: Update Upgrade
+    apt: update_cache=true upgrade=full
 
   - name: Download collectd
     apt:
@@ -27,11 +29,8 @@
       sudo echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' >> /etc/apt/sources.list
       curl https://packagecloud.io/gpg.key | sudo apt-key add -
 
-  - name: Update & Upgrade
-    apt:
-      upgrade=full
-      update_cache=yes
-      cache_valid_time=3600
+  - name: Update Upgrade
+    apt: update_cache=true upgrade=full
 
   - name: Download grafana
     apt:
@@ -85,17 +84,11 @@
 
 # Part 3: Starting services
 
-  - name: start collectd
-    service:
-      name=collectd
-      state=restarted
+  - name: restart collectd
+    service: name=collectd state=restarted
 
-  - name: start influxdb
-    service:
-      name=influxdb
-      state=restarted
-
-  - start grafana
-    service:
-      name=grafana-server
-      state=restarted
+  - name: restart influxdb
+    service: name=influxdb state=restarted
+    
+  - name: restart grafana-server
+    service: name=grafana-server state=restarte
