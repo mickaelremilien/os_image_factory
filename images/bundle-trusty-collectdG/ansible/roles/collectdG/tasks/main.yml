@@ -45,8 +45,8 @@
       replace='LoadPlugin network'
 
   - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin network>"
-  - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826"
-  - lineinfile: dest=/etc/collectd/collectd.conf line="</Plugin>
+  - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826""
+  - lineinfile: dest=/etc/collectd/collectd.conf line="</Plugin>"
 
   - name: Influxdb configuration 1
     replace:
@@ -76,7 +76,7 @@
     replace:
       dest=/etc/opt/influxdb/influxdb.conf
       regexp='25826'
-      replace='25826'
+      replace=':25826'
 
 # Part 3: Starting services
 
