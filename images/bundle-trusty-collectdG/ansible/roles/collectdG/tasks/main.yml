@@ -47,11 +47,11 @@
   - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826""
   - lineinfile: dest=/etc/collectd/collectd.conf line="</Plugin>"
 
-  - name: Influxdb configuration 
+  - name: Influxdb configuration
     replace:
       dest=/etc/opt/influxdb/influxdb.conf
-      regexp='\[collectd\]\n\tenabled=false\n\t# bind-address = ""\n\t# database = ""\n\t# typesdb = ""'
-      replace='\[collectd\]\n\tenabled=true\n\tbind-address = "25826"\n\tdatabase = "collectd_db"\n\ttypesdb = "/usr/share/collectd/types.db"'
+      regexp='\[collectd\]\n  enabled=false\n  # bind-address = ""\n  # database = ""\n  # typesdb = ""'
+      replace='\[collectd\]\n  enabled=true\n  bind-address = "25826"\n  database = "collectd_db"\n  typesdb = "/usr/share/collectd/types.db"'
 
   # - name: Influxdb configuration 1
   #   replace:
