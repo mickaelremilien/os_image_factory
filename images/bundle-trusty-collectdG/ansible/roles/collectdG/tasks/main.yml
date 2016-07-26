@@ -46,7 +46,7 @@
   - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin network>"
   - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826""
   - name: test add
-    lineinfile: dest=/etc/collectd/collectd.conf line="</Plugin>"
+    lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin>"
 
   - name: Influxdb configuration
     replace:
