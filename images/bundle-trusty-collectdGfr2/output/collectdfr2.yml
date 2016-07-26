@@ -88,20 +88,6 @@ resources:
         - subnet_id: { get_resource: subnet }
       security_groups: [{ get_resource: security_group }]
 
-  # security_group:
-  #   type: OS::Neutron::SecurityGroup
-  #   properties:
-  #     rules:
-  #       # - { direction: ingress, protocol: TCP, port_range_min: 22, port_range_max: 22 }
-  #       # - { direction: ingress, protocol: TCP, port_range_min: 80, port_range_max: 80 }
-  #       # - { direction: ingress, protocol: TCP, port_range_min: 443, port_range_max: 443 }
-  #       # - { direction: ingress, protocol: ICMP }
-  #       # - { direction: egress, protocol: TCP, port_range_min: 80, port_range_max: 80 }
-  #       - { direction: ingress, protocol: TCP, port_range_min: 0, port_range_max: 65535 }
-  #       - { direction: ingress, protocol: UDP, port_range_min: 0, port_range_max: 65535 }
-  #       - { direction: egress, protocol: ICMP }
-  #       - { direction: egress, protocol: TCP }
-  #       - { direction: egress, protocol: UDP }
 
   subnet:
     type: OS::Neutron::Subnet
@@ -133,8 +119,8 @@ resources:
         echo "[local]" >> /etc/ansible/hosts
         echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
         cd /home/cloud
-        git clone https://github.com/mickaelremilien/os_image_factory.git
-        sudo ansible-playbook os_image_factory/images/bundle-trusty-collectdG/ansible/boot2strapcollectdG.yml -vvvv
+        sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
+        sudo rm -r collectdG
 
 outputs:
 
@@ -150,6 +136,6 @@ outputs:
     description: grafana URL
     value:
       str_replace:
-        template: http://$floating_ip$:3000
+        template: http://$floating_ip$:3000/
         params:
           $floating_ip$: { get_attr: [floating_ip, floating_ip_address] }

@@ -1,0 +1,72 @@
+---
+
+# Part 1: download packages
+
+  - name: Update Upgrade
+    apt: update_cache=true upgrade=full
+
+  - name: Download collectd
+    apt:
+      pkg={{ item }}
+      state=present
+    with_items:
+      - collectd
+
+  - name: Download influxdb
+    apt:
+      deb=https://s3.amazonaws.com/influxdb/influxdb_0.9.3_amd64.deb
+
+  - name: Add source grafana
+    args:
+      #chdir: /etc/openvpn/
+      executable: /bin/bash
+    shell: |
+      sudo echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' >> /etc/apt/sources.list
+      curl https://packagecloud.io/gpg.key | sudo apt-key add -
+
+  - name: Update Upgrade
+    apt: update_cache=true upgrade=full
+
+  - name: Download grafana
+    apt:
+      pkg={{ item }}
+      state=present
+    with_items:
+      - apt-transport-https
+      - grafana
+
+# Part 2: Configuration
+
+  - name: Collectd configuration 1
+    replace:
+      dest=/etc/collectd/collectd.conf
+      regexp='#LoadPlugin network'
+      replace='LoadPlugin network'
+
+  - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin network>"
+  - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826""
+  - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin>"
+
+  - name: Collectd configuration 1
+    replace:
+      dest=/etc/collectd/collectd.conf
+      regexp='<Plugin>'
+      replace='</Plugin>'    
+
+
+  - name: Influxdb configuration
+    replace:
+      dest=/etc/opt/influxdb/influxdb.conf
+      regexp='^\[collectd\](\n.*){4}'
+      replace='[collectd]\n  enabled = true\n  bind-address = ":25826"\n  database = "collectd_db"\n  typesdb = "/usr/share/collectd/types.db"'
+
+# Part 3: Starting services
+
+  - name: restart collectd
+    service: name=collectd state=restarted
+
+  - name: restart influxdb
+    service: name=influxdb state=restarted
+
+  - name: restart grafana-server
+    service: name=grafana-server state=restarted
