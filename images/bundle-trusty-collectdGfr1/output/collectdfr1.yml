@@ -11,11 +11,6 @@ parameters:
     type: string
     default: mickael
 
-  image:
-    type: string
-    description: Glance Image
-    default: "Ubuntu 14.04"
-
   flavor:
     default: n2.cw.standard-2
     description: Flavor to use for the deployed instance
@@ -101,7 +96,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: MonServ
-      image: { get_param: image }
+      image: 900e0b7d-5837-4203-b09e-c76df035700e
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
       networks:
