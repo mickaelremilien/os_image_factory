@@ -69,12 +69,24 @@ resources:
         - { direction: ingress, protocol: TCP, port_range_min: 22, port_range_max: 22 }
         - { direction: ingress, protocol: TCP, port_range_min: 80, port_range_max: 80 }
         - { direction: ingress, protocol: TCP, port_range_min: 443, port_range_max: 443 }
-        - { direction: ingress, protocol: UDP, port_range_min: 1194, port_range_max: 1194 }
+        - { direction: ingress, protocol: UDP, port_range_min: 3306, port_range_max: 3306 }
+        - { direction: egress, protocol: UDP, port_range_min: 3306, port_range_max: 3306 }
+        - { direction: ingress, protocol: UDP, port_range_min: 3000, port_range_max: 3000 }
+        - { direction: egress, protocol: UDP, port_range_min: 3000, port_range_max: 3000 }
+        - { direction: ingress, protocol: TCP, port_range_min: 3000, port_range_max: 3000 }
+        - { direction: egress, protocol: TCP, port_range_min: 3000, port_range_max: 3000 }
+        - { direction: egress, protocol: TCP, port_range_min: 2003, port_range_max: 2003 }
+        - { direction: ingress, protocol: TCP, port_range_min: 2003, port_range_max: 2003 }
+        - { direction: egress, protocol: TCP, port_range_min: 8080, port_range_max: 8080 }
+        - { direction: ingress, protocol: TCP, port_range_min: 8080, port_range_max: 8080 }
+        - { direction: egress, protocol: UDP, port_range_min: 25826, port_range_max: 25826 }
+        - { direction: ingress, protocol: UDP, port_range_min: 25826, port_range_max: 25826 }
+        - { direction: egress, protocol: TCP, port_range_min: 25826, port_range_max: 25826 }
+        - { direction: ingress, protocol: TCP, port_range_min: 25826, port_range_max: 25826 }
         - { direction: ingress, protocol: ICMP }
         - { direction: egress, protocol: ICMP }
         - { direction: egress, protocol: TCP }
         - { direction: egress, protocol: UDP }
-        - { direction: egress, protocol: UDP, port_range_min: 1194, port_range_max: 1194 }
 
   server:
     type: OS::Nova::Server
@@ -101,4 +113,4 @@ resources:
         ssh-keygen -t rsa
         cd /home/cloud/
         sudo ansible-playbook /home/cloud/ansible/bootstrap.yml
-        sudo mkdir fin  
+        sudo mkdir fin

@@ -114,7 +114,7 @@ resources:
         echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
         cd /home/cloud
         sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
-        sudo rm -r collectdG
+        #sudo rm -r collectdG
 
 outputs:
 
