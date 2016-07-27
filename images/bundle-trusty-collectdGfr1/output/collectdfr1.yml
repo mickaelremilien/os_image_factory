@@ -12,7 +12,7 @@ parameters:
     default: mickael
 
   flavor:
-    default: n2.cw.standard-2
+    default: n1.cw.standard-2
     description: Flavor to use for the deployed instance
     type: string
     label: Instance Type (Flavor)
@@ -20,16 +20,11 @@ parameters:
       - allowed_values:
         - t1.cw.tiny
         - s1.cw.small-1
-        - n2.cw.standard-1
-        - n2.cw.standard-2
-        - n2.cw.standard-4
-        - n2.cw.standard-8
-        - n2.cw.standard-12
-        - n2.cw.standard-16
-        - n2.cw.highmem-2
-        - n2.cw.highmem-4
-        - n2.cw.highmem-8
-        - n2.cw.highmem-12
+        - n1.cw.standard-1
+        - n1.cw.standard-2
+        - n1.cw.standard-4
+        - n1.cw.standard-8
+
 
 resources:
 
@@ -83,6 +78,7 @@ resources:
         - subnet_id: { get_resource: subnet }
       security_groups: [{ get_resource: security_group }]
 
+
   subnet:
     type: OS::Neutron::Subnet
     properties:
@@ -114,7 +110,7 @@ resources:
         echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
         cd /home/cloud
         sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
-        #sudo rm -r collectdG
+        #sudo rm -r collectdG
 
 outputs:
 
