@@ -13,13 +13,13 @@ parameters:
     type: string
 
   image_id:
-    #default: "185e1975-c9c5-4358-909e-5e329808902e"
-    default: "8a4fa0b6-4191-4c23-92f2-10d82f54c41b"
+    default: "185e1975-c9c5-4358-909e-5e329808902e"
+    #default: "8a4fa0b6-4191-4c23-92f2-10d82f54c41b"
     description: Image ID of the system (default is Cloudwatt's Debian Jessie)
     type: string
 
   flavor_name:
-    default: n2.cw.standard-8
+    default: n1.cw.highcpu-8
     label: Instance Type (Flavor)
     description: Flavor to use for the deployed instance
     type: string
@@ -85,8 +85,8 @@ resources:
   ip:
     type: OS::Neutron::FloatingIP
     properties:
-      floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
-      #floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
+      #floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
+      floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
 
   system_bootstrap:
     type: OS::Heat::SoftwareConfig
