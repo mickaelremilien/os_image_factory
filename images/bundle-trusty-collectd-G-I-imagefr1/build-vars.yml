@@ -4,5 +4,5 @@ bundle:
   img_base: 6622878a-c762-4a88-b594-c30f255dcc06
   properties:
     img_os: Ubuntu
-    cw_bundle: collectdG
+    cw_bundle: collectdGI
     cw_origin: Cloudwatt
