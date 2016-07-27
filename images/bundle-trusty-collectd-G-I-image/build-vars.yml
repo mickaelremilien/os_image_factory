@@ -1,6 +1,6 @@
 ---
 bundle:
-  name: bundle-trusty-collectd-G-I-imagefr1
+  name: bundle-trusty-collectd-G-I-image
   img_base: 6622878a-c762-4a88-b594-c30f255dcc06
   properties:
     img_os: Ubuntu
