@@ -34,6 +34,7 @@
     with_items:
       - apt-transport-https
       - grafana
+      - apache2-utils 
 
 # Part 2: Configuration
 
