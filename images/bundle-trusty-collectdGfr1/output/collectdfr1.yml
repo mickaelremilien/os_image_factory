@@ -96,14 +96,14 @@ resources:
   server:
     type: OS::Nova::Server
     properties:
-      name: MonCli
-      image: c2c124ea-a765-465f-bcda-3e6ae0fa9223
+      name: MonSERVER
+      image: fcf7be77-221b-4ed8-a352-0a013e116675
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
       networks:
         - port: { get_resource: server_port }
       user_data_format: RAW
-      user_data: 
+      user_data:
         str_replace:
           template: |
             #!/usr/bin/env bash
@@ -117,8 +117,10 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             cd /home/cloud
             echo -n "$CDPASSWD$" >> collectd_passwd
-            #sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
-            #sudo rm -r collectdG
+            sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
+            sudo rm -r collectdG
+            #git clone https://github.com/mickaelremilien/os_image_factory.git
+            #sudo ansible-playbook /home/cloud/os_image_factory/images/bundle-trusty-collectd-G-I-image/ansible/collectdG/bootstrap.yml -vvvv
           params:
             $CDPASSWD$: { get_param: collectd_passwd }
 

@@ -97,7 +97,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: MonServ
-      image: 4b784810-e7f9-48c7-ad08-b8f178901e85
+      image: 8d47a71a-7cef-4957-891d-4ee7aa1c2ca5
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
       networks:
