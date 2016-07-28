@@ -1,8 +1,0 @@
----
-
-  - name: restart
-    service: name=collectd state=restarted
-  - name: restart
-    service: name=influxdb state=restarted
-  - name: restart
-    service: name=grafana-server state=restarted
