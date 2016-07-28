@@ -25,6 +25,11 @@ parameters:
         - n1.cw.standard-4
         - n1.cw.standard-8
 
+  collectd_passwd:
+    default: my_password
+    description: passwd connexion between collectd client and server
+    type: string
+    hidden: true
 
 resources:
 
@@ -91,26 +96,31 @@ resources:
   server:
     type: OS::Nova::Server
     properties:
-      name: MonServ
+      name: MonCli
       image: c2c124ea-a765-465f-bcda-3e6ae0fa9223
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
       networks:
         - port: { get_resource: server_port }
       user_data_format: RAW
-      user_data: |
-        #!/usr/bin/env bash
-        export DEBIAN_FRONTEND=noninteractive
-        apt-get update 2>&1 >> /var/log/col_srv.log
-        echo "$(date) - update done" >> /var/log/col_srv.log
-        apt-get -o Dpkg::Options::="--force-confold" upgrade -y 2>&1 >> /var/log/col_srv.log
-        echo "$(date) - upgrade done" >> /var/log/col_srv.log
-        mkdir /etc/ansible
-        echo "[local]" >> /etc/ansible/hosts
-        echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
-        cd /home/cloud
-        sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
-        #sudo rm -r collectdG
+      user_data: 
+        str_replace:
+          template: |
+            #!/usr/bin/env bash
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update 2>&1 >> /var/log/col_srv.log
+            echo "$(date) - update done" >> /var/log/col_srv.log
+            apt-get -o Dpkg::Options::="--force-confold" upgrade -y 2>&1 >> /var/log/col_srv.log
+            echo "$(date) - upgrade done" >> /var/log/col_srv.log
+            mkdir /etc/ansible
+            echo "[local]" >> /etc/ansible/hosts
+            echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
+            cd /home/cloud
+            echo -n "$CDPASSWD$" >> collectd_passwd
+            #sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
+            #sudo rm -r collectdG
+          params:
+            $CDPASSWD$: { get_param: collectd_passwd }
 
 outputs:
 

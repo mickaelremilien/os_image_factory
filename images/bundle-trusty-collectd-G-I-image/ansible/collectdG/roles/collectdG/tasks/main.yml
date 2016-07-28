@@ -44,15 +44,25 @@
       replace='LoadPlugin network'
 
   - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin network>"
-  - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826""
+  - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "0.0.0.0" "25826""
+  - lineinfile: dest=/etc/collectd/collectd.conf line="  SecurityLevel Sign"
+  - lineinfile: dest=/etc/collectd/collectd.conf line="  AuthFile "etccollectdpasswd""
   - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin>"
 
   - name: Collectd configuration 1
     replace:
       dest=/etc/collectd/collectd.conf
       regexp='<Plugin>'
-      replace='</Plugin>'    
+      replace='</Plugin>'
 
+  - name: Collectd configuration 2
+    replace:
+      dest=/etc/collectd/collectd.conf
+      regexp='etccollectdpasswd'
+      replace='/etc/collectd/passwd'
+
+  - name: Set htpasswd
+    htpasswd: path=/etc/collectd/passwd name=collectd password="{{ collectd_passwd }}" owner=root group=www-data mode=0640
 
   - name: Influxdb configuration
     replace:

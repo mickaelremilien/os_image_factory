@@ -1,0 +1,3 @@
+---
+collectdG:
+collectd_passwd: "{{ lookup('file', '/home/cloud/collectd_passwd') }}"
