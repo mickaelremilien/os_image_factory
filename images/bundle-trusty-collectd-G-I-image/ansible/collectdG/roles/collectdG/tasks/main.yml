@@ -11,6 +11,12 @@
       state=present
     with_items:
       - collectd
+      
+  - name: Download passlib
+    apt:
+      pkg=python-passlib
+      state=latest
+      install_recomends=yes
 
   - name: Download influxdb
     apt:
@@ -34,7 +40,7 @@
     with_items:
       - apt-transport-https
       - grafana
-      - apache2-utils 
+      - apache2-utils
 
 # Part 2: Configuration
 
