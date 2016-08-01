@@ -14,7 +14,7 @@
 
   - name: Download influxdb
     apt:
-      deb=https://s3.amazonaws.com/influxdb/influxdb_0.9.3_amd64.deb
+      deb=https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_amd64.deb
 
   - name: Add source grafana
     args:

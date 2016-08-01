@@ -54,29 +54,17 @@ resources:
     properties:
       rules:
         - { direction: ingress, protocol: TCP, port_range_min: 22, port_range_max: 22 }
-        #- { direction: ingress, protocol: TCP, port_range_min: 80, port_range_max: 80 }
-        #- { direction: ingress, protocol: TCP, port_range_min: 443, port_range_max: 443 }
-        # - { direction: ingress, protocol: UDP, port_range_min: 3306, port_range_max: 3306 }
-        # - { direction: egress, protocol: UDP, port_range_min: 3306, port_range_max: 3306 }
-        # - { direction: ingress, protocol: UDP, port_range_min: 3000, port_range_max: 3000 }
-        # - { direction: egress, protocol: UDP, port_range_min: 3000, port_range_max: 3000 }
         - { direction: ingress, protocol: TCP, port_range_min: 3000, port_range_max: 3000 }
         - { direction: egress, protocol: TCP, port_range_min: 3000, port_range_max: 3000 }
-        #- { direction: egress, protocol: TCP, port_range_min: 2003, port_range_max: 2003 }
-        #- { direction: ingress, protocol: TCP, port_range_min: 2003, port_range_max: 2003 }
         - { direction: egress, protocol: TCP, port_range_min: 8086, port_range_max: 8086 }
         - { direction: ingress, protocol: TCP, port_range_min: 8086, port_range_max: 8086 }
-        - { direction: egress, protocol: TCP, port_range_min: 25826, port_range_max: 25826 }
-        - { direction: ingress, protocol: TCP, port_range_min: 25826, port_range_max: 25826 }
+        # - { direction: egress, protocol: TCP, port_range_min: 25826, port_range_max: 25826 }
+        # - { direction: ingress, protocol: TCP, port_range_min: 25826, port_range_max: 25826 }
         - { direction: ingress, protocol: ICMP }
         - { direction: egress, protocol: ICMP }
         - { direction: egress, protocol: TCP }
         - { direction: egress, protocol: UDP }
-#retire les ports inutiles pour le 25628 expliquer dans l 'article
-#netoyer plabook
-#enlever parametre
-#params sortie collectd_passwd
-#conf auto grafana add data source
+
 # changer la source de influxdb dans le packages plabook
   server_port:
     type: OS::Neutron::Port
@@ -124,7 +112,6 @@ resources:
             #sudo rm -r collectdG
             git clone https://github.com/mickaelremilien/os_image_factory.git
             sudo ansible-playbook /home/cloud/os_image_factory/images/bundle-trusty-collectd-G-I/bundle-trusty-collectdGfr1/ansible/bootstrap.yml -vvvv
-        #    curl 'http://admin:admin@127.0.0.1:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influx","type":"influxdb","url":"http://localhost:8086","access":"proxy","isDefault":true,"database":"collectd_db","user":"root","password":"root"}'
           params:
             $CDPASSWD$: { get_param: collectd_passwd }
 
