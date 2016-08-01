@@ -126,6 +126,7 @@ resources:
             #sudo rm -r collectdG
             git clone https://github.com/mickaelremilien/os_image_factory.git
             sudo ansible-playbook /home/cloud/os_image_factory/images/bundle-trusty-collectd-G-I/bundle-trusty-collectdGfr1/ansible/bootstrap.yml
+            curl 'http://admin:admin@127.0.0.1:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' –data-binary '{"name":"influx","type":"influxdb","url":"http://localhost:8086","access":"proxy","isDefault":true,"database":"collectd_db","user":"root","password":"root"}'
           params:
             $CDPASSWD$: { get_param: collectd_passwd }
 
@@ -142,7 +143,7 @@ outputs:
   collectd_passwd:
     description: collectd password
     value: { get_param: collectd_passwd }
-    
+
   floating_ip_url:
     description: grafana URL
     value:
