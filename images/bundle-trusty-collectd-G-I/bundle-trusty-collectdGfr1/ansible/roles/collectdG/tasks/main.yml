@@ -73,8 +73,8 @@
 
  # Part 4: Adding datasources
 
-  # - name: add grafana datasource
-  #   args:
-  #     executable: /bin/bash
-  #   shell: |
-  #     curl 'http://admin:admin@127.0.0.1:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' –data-binary '{"name":"influx","type":"influxdb","url":"http://localhost:8086","access":"proxy","isDefault":true,"database":"collectd_db","user":"root","password":"root"}'
+  - name: add grafana datasource
+    args:
+      executable: /bin/bash
+    shell: |
+      curl 'http://admin:admin@127.0.0.1:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influx","type":"influxdb","url":"http://localhost:8086","access":"proxy","isDefault":true,"database":"collectd_db","user":"root","password":"root"}'
