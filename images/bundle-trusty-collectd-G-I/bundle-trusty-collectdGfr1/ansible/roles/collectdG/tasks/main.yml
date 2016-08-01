@@ -59,7 +59,7 @@
 
   - name: Influxdb configuration
     replace:
-      dest=/etc/opt/influxdb/influxdb.conf
+      dest=/etc/influxdb/influxdb.conf
       regexp='^\[collectd\](\n.*){4}'
       replace='[collectd]\n  enabled = true\n  bind-address = ":25826"\n  database = "collectd_db"\n  typesdb = "/usr/share/collectd/types.db"'
 
