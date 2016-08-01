@@ -12,27 +12,31 @@
     with_items:
       - collectd
 
-  - name: Download passlib
-    apt:
-      pkg=python-passlib
-      state=latest
-      install_recommends=yes
+  - name: Add source influxdb
+    args:
+      executable: /bin/bash
+    shell: |
+      echo "deb https://repos.influxdata.com/debian jessie stable" > /etc/apt/sources.list.d/influxdb.list
+      curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 
-  - name: Download and Dpkg influxdb
-      deb=https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_amd64.deb
-
+  - name: Add source grafana
+    args:
+      executable: /bin/bash
+    shell: |
+      sudo echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' >> /etc/apt/sources.list
+      curl https://packagecloud.io/gpg.key | sudo apt-key add -
 
   - name: Update Upgrade
     apt: update_cache=true upgrade=full
 
-  - name: Download grafana
+  - name: Download grafana & influxdb
     apt:
       pkg={{ item }}
       state=present
     with_items:
       - apt-transport-https
       - grafana
-      - apache2-utils
+      - influxdb
 
 # Part 2: Configuration
 
@@ -43,9 +47,7 @@
       replace='LoadPlugin network'
 
   - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin network>"
-  - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "0.0.0.0" "25826""
-  - lineinfile: dest=/etc/collectd/collectd.conf line="  SecurityLevel Sign"
-  - lineinfile: dest=/etc/collectd/collectd.conf line="  AuthFile "etccollectdpasswd""
+  - lineinfile: dest=/etc/collectd/collectd.conf line="  Server "127.0.0.1" "25826""
   - lineinfile: dest=/etc/collectd/collectd.conf line="<Plugin>"
 
   - name: Collectd configuration 1
@@ -54,20 +56,13 @@
       regexp='<Plugin>'
       replace='</Plugin>'
 
-  - name: Collectd configuration 2
-    replace:
-      dest=/etc/collectd/collectd.conf
-      regexp='etccollectdpasswd'
-      replace='/etc/collectd/passwd'
-
-  - name: Set htpasswd
-    htpasswd: path=/etc/collectd/passwd name=collectd password="{{ collectd_passwd }}" owner=root group=www-data mode=0640
 
   - name: Influxdb configuration
     replace:
-      dest=/etc/opt/influxdb/influxdb.conf
-      regexp='^\[collectd\](\n.*){4}'
+      dest=/etc/influxdb/influxdb.conf
+      regexp='^\[\[collectd\]\](\n.*){4}'
       replace='[collectd]\n  enabled = true\n  bind-address = ":25826"\n  database = "collectd_db"\n  typesdb = "/usr/share/collectd/types.db"'
+
 
 # Part 3: Starting services
 
@@ -79,3 +74,11 @@
 
   - name: restart grafana-server
     service: name=grafana-server state=restarted
+
+ # Part 4: Adding datasources
+
+  - name: add grafana datasource
+    args:
+      executable: /bin/bash
+    shell: |
+      curl 'http://admin:admin@127.0.0.1:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influx","type":"influxdb","url":"http://localhost:8086","access":"proxy","isDefault":true,"database":"collectd_db","user":"root","password":"root"}'
