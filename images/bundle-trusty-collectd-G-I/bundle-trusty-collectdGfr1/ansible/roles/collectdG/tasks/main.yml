@@ -13,9 +13,12 @@
       - collectd
       - urllib3
 
-  - name: Download influxdb
-    apt:
-      deb=https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_amd64.deb
+  - name: Add source influxdb
+    args:
+      executable: /bin/bash
+    shell: |
+      echo "deb https://repos.influxdata.com/debian jessie stable" > /etc/apt/sources.list.d/influxdb.list
+      curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 
   - name: Add source grafana
     args:
@@ -27,13 +30,14 @@
   - name: Update Upgrade
     apt: update_cache=true upgrade=full
 
-  - name: Download grafana
+  - name: Download grafana & influxdb
     apt:
       pkg={{ item }}
       state=present
     with_items:
       - apt-transport-https
       - grafana
+      - influxdb
 
 # Part 2: Configuration
 
