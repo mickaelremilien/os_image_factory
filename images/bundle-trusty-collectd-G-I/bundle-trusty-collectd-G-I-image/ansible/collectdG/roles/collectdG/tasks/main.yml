@@ -18,14 +18,12 @@
       state=latest
       install_recommends=yes
 
-  - name: Download influxdb
-    apt:
-      deb=https://s3.amazonaws.com/influxdb/influxdb_0.9.3_amd64.deb
+  - name: Download and Dpkg influxdb
+      deb=https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_amd64.deb
 
   - name: Add source grafana
     args:
-      #chdir: /etc/openvpn/
-      executable: /bin/bash
+    executable: /bin/bash
     shell: |
       sudo echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' >> /etc/apt/sources.list
       curl https://packagecloud.io/gpg.key | sudo apt-key add -

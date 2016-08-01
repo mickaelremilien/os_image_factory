@@ -74,7 +74,12 @@ resources:
         - { direction: egress, protocol: ICMP }
         - { direction: egress, protocol: TCP }
         - { direction: egress, protocol: UDP }
-
+#retire les ports inutiles pour le 25628 expliquer dans l 'article
+#netoyer plabook
+#enlever parametre
+#params sortie collectd_passwd
+#conf auto grafana add data source
+# changer la source de influxdb dans le packages plabook
   server_port:
     type: OS::Neutron::Port
     properties:
@@ -119,8 +124,6 @@ resources:
             echo -n "$CDPASSWD$" >> collectd_passwd
             sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
             sudo rm -r collectdG
-            #git clone https://github.com/mickaelremilien/os_image_factory.git
-            #sudo ansible-playbook /home/cloud/os_image_factory/images/bundle-trusty-collectd-G-I-image/ansible/collectdG/bootstrap.yml -vvvv
           params:
             $CDPASSWD$: { get_param: collectd_passwd }
 
