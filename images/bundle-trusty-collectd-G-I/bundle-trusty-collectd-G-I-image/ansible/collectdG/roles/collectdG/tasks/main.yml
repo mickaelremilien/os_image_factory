@@ -21,12 +21,6 @@
   - name: Download and Dpkg influxdb
       deb=https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_amd64.deb
 
-  - name: Add source grafana
-    args:
-    executable: /bin/bash
-    shell: |
-      sudo echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' >> /etc/apt/sources.list
-      curl https://packagecloud.io/gpg.key | sudo apt-key add -
 
   - name: Update Upgrade
     apt: update_cache=true upgrade=full

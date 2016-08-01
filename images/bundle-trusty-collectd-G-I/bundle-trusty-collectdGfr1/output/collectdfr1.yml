@@ -122,8 +122,10 @@ resources:
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             cd /home/cloud
             echo -n "$CDPASSWD$" >> collectd_passwd
-            sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
-            sudo rm -r collectdG
+            #sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
+            #sudo rm -r collectdG
+            git clone https://github.com/mickaelremilien/os_image_factory.git
+            sudo ansible-playbook /home/cloud/os_image_factory/images/bundle-trusty-collectd-G-I/bundle-trusty-collectdGfr1/ansible/bootstrap.yml
           params:
             $CDPASSWD$: { get_param: collectd_passwd }
 
@@ -137,6 +139,10 @@ outputs:
     description: IP address of client in private network
     value: { get_attr: [ server, first_address ] }
 
+  collectd_passwd:
+    description: collectd password
+    value: { get_param: collectd_passwd }
+    
   floating_ip_url:
     description: grafana URL
     value:
