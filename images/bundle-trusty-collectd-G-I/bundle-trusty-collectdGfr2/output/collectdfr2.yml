@@ -18,18 +18,10 @@ parameters:
     label: Instance Type (Flavor)
     constraints:
       - allowed_values:
-        - t1.cw.tiny
-        - s1.cw.small-1
         - n2.cw.standard-1
         - n2.cw.standard-2
         - n2.cw.standard-4
         - n2.cw.standard-8
-        - n2.cw.standard-12
-        - n2.cw.standard-16
-        - n2.cw.highmem-2
-        - n2.cw.highmem-4
-        - n2.cw.highmem-8
-        - n2.cw.highmem-12
 
   collectd_passwd:
     default: my_password
@@ -60,20 +52,11 @@ resources:
     properties:
       rules:
         - { direction: ingress, protocol: TCP, port_range_min: 22, port_range_max: 22 }
-        - { direction: ingress, protocol: TCP, port_range_min: 80, port_range_max: 80 }
         - { direction: ingress, protocol: TCP, port_range_min: 443, port_range_max: 443 }
-        - { direction: ingress, protocol: UDP, port_range_min: 3306, port_range_max: 3306 }
-        - { direction: egress, protocol: UDP, port_range_min: 3306, port_range_max: 3306 }
-        - { direction: ingress, protocol: UDP, port_range_min: 3000, port_range_max: 3000 }
-        - { direction: egress, protocol: UDP, port_range_min: 3000, port_range_max: 3000 }
         - { direction: ingress, protocol: TCP, port_range_min: 3000, port_range_max: 3000 }
         - { direction: egress, protocol: TCP, port_range_min: 3000, port_range_max: 3000 }
-        - { direction: egress, protocol: TCP, port_range_min: 2003, port_range_max: 2003 }
-        - { direction: ingress, protocol: TCP, port_range_min: 2003, port_range_max: 2003 }
-        - { direction: egress, protocol: TCP, port_range_min: 8080, port_range_max: 8080 }
-        - { direction: ingress, protocol: TCP, port_range_min: 8080, port_range_max: 8080 }
-        - { direction: egress, protocol: UDP, port_range_min: 25826, port_range_max: 25826 }
-        - { direction: ingress, protocol: UDP, port_range_min: 25826, port_range_max: 25826 }
+        - { direction: egress, protocol: TCP, port_range_min: 8086, port_range_max: 8086 }
+        - { direction: ingress, protocol: TCP, port_range_min: 8086, port_range_max: 8086 }
         - { direction: egress, protocol: TCP, port_range_min: 25826, port_range_max: 25826 }
         - { direction: ingress, protocol: TCP, port_range_min: 25826, port_range_max: 25826 }
         - { direction: ingress, protocol: ICMP }
@@ -103,7 +86,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: MonSERVER
-      image: 8d47a71a-7cef-4957-891d-4ee7aa1c2ca5
+      image: a14dd837-5515-4823-be9b-6db18b3a707b
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
       networks:
@@ -137,6 +120,10 @@ outputs:
   server_private_ip:
     description: IP address of client in private network
     value: { get_attr: [ server, first_address ] }
+
+  collectd_passwd:
+    description: collectd password
+    value: { get_param: collectd_passwd }
 
   floating_ip_url:
     description: grafana URL
