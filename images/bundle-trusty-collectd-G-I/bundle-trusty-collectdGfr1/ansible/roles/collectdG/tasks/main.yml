@@ -11,6 +11,7 @@
       state=present
     with_items:
       - collectd
+      - urllib3
 
   - name: Download influxdb
     apt:
