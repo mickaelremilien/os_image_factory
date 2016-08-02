@@ -1,7 +1,6 @@
 heat_template_version: 2013-05-23
 
-description: >
-  HOT template to deploy one instance into the existing VPN Server Lan
+description:  HOT template to deploy a Collectd-Influxdb-Gafana stack
 
 parameters:
 
@@ -9,19 +8,21 @@ parameters:
     description: Keypair to inject in instance
     label: SSH Keypair
     type: string
-    default: mickaelfr2
+    default: mickael
 
   flavor:
-    default: n2.cw.standard-2
+    default: n1.cw.standard-2
     description: Flavor to use for the deployed instance
     type: string
     label: Instance Type (Flavor)
     constraints:
       - allowed_values:
-        - n2.cw.standard-1
-        - n2.cw.standard-2
-        - n2.cw.standard-4
-        - n2.cw.standard-8
+        - t1.cw.tiny
+        - s1.cw.small-1
+        - n1.cw.standard-1
+        - n1.cw.standard-2
+        - n1.cw.standard-4
+        - n1.cw.standard-8
 
   collectd_passwd:
     default: my_password
@@ -38,7 +39,7 @@ resources:
   floating_ip:
     type: OS::Neutron::FloatingIP
     properties:
-      floating_network_id: b5dd7532-1533-4b9c-8bf9-e66631a9be1d
+      floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
       port_id: { get_resource: server_port }
 
   floating_ip_link:
@@ -86,7 +87,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: MonSERVER
-      image: a14dd837-5515-4823-be9b-6db18b3a707b
+      image: d0d6370c-86d8-4c4d-ab19-3fcd6b7aa2da
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
       networks:

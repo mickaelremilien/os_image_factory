@@ -12,7 +12,7 @@ Le port par défaut utilisé par OpenVPN est le port UDP 1194, basé sur un assi
 
 ## Descriptions
 
-La stack "vpn(site-to-site)"" crée deux instance, un client VPN et un serveur VPN puis monte un tunnel vpn entre ces deux noeuds.
+La stack "vpn(site-to-site)" crée deux instances, un client VPN et un serveur VPN puis monte un tunnel vpn entre ces deux noeuds.
 
 ## Preparations
 
@@ -36,7 +36,7 @@ Vous pouvez ajuster les paramètres de la stack à votre goût.
 
 ## Tour du propriétaire
 
-Une fois le dépôt cloné, vous trouverez le répertoire `bundle-coreos-cassandra/`
+Une fois le dépôt cloné, vous trouverez le répertoire `bundle-trusty-vpn/`
 
 * `bundle-trusty-vpn.heat.yml`: Template d'orchestration HEAT, qui servira à déployer l'infrastructure nécessaire.
 * `stack-start.sh`: Scipt de lancement de la stack, qui simplifie la saisie des paramètres et sécurise la création du mot de passe admin.
@@ -216,7 +216,7 @@ $ ./stack-start.sh vpn
 +--------------------------------------+-----------------+--------------------+----------------------+
 | id                                   | stack_name      | stack_status       | creation_time        |
 +--------------------------------------+-----------------+--------------------+----------------------+
-| ee873a3a-a306-4127-8647-4bc80469cec4 | VPN       | CREATE_IN_PROGRESS | 2015-11-25T11:03:51Z |
+| ee873a3a-a306-4127-8647-4bc80469cec4 | VPN             | CREATE_IN_PROGRESS | 2015-11-25T11:03:51Z |
 +--------------------------------------+-----------------+--------------------+----------------------+
 ~~~
 
@@ -228,7 +228,7 @@ Puis attendez **5 minutes** que le déploiement soit complet.
  +--------------------------------------+------------+-----------------+----------------------+
  | id                                   | stack_name | stack_status    | creation_time        |
  +--------------------------------------+------------+-----------------+----------------------+
- | xixixx-xixxi-ixixi-xiixxxi-ixxxixixi | VPN  | CREATE_COMPLETE | 2025-10-23T07:27:69Z |
+ | xixixx-xixxi-ixixi-xiixxxi-ixxxixixi | VPN        | CREATE_COMPLETE | 2025-10-23T07:27:69Z |
  +--------------------------------------+------------+-----------------+----------------------+
  ~~~
  ### C’est bien tout ça, mais vous n’auriez pas un moyen de lancer l’application par la console ?
@@ -361,10 +361,10 @@ ssh -i <keypair> cloud@<node-ip@>
 
 ### Consulter les logs de OpenVPN
 
-Les logs de services OpenVPN sont visibles via ligne de commande
+Les logs du service OpenVPN sont visibles via ligne de commande
 
 ~~~ bash
-ssh -i <keypair> core@<node-ip@>
+ssh -i <keypair> cloud@<node-ip@>
 
 ~~~
 
