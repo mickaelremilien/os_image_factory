@@ -6,7 +6,7 @@
 
 Written in 2005 by Florian Forster and developed as project free open-source, Collectd is a demon Unix which collects the metrics to send by the sensors of the local machine or the distant machines. The collected datas are transferred on the backends a temporal series database.
 
-![InfluxDatalogo](img/influx-logo.jpg)
+![InfluxDatalogo](img/influx-logo.png)
 
 InfluxData is a solution of collection, storage, of visualisialisation, alert and real time analysis on the temporal series of data emitted by these sensors placed on the local machine and the distant machines. It is a basic tools of donnnées of series temporal used in support in applications in development, the services and architectures with whom it is connected.
 ( A temporal series is a series of points which represents a series of measures identified by the moment with which they were taken, in particular thanks to the timestamp.)
@@ -43,7 +43,7 @@ The stack " Collectd-G-I " creates an authority, pre-configurate with the servic
 
   You can adjust the stack parameters, particularly its defaut size.
 
-## Tour du propriétaire
+## What will you find in the repository
 
 Once the repository cloned, you will find the folder
  `bundle-trusty-collectd-G-I/`
@@ -172,10 +172,10 @@ Then wait for **5 minutes** than the deplyemnent been completed.
  | xixixx-xixxi-ixixi-xiixxxi-ixxxixixi | Collectd-G-I| CREATE_COMPLETE | 2025-10-23T07:27:69Z |
  +--------------------------------------+-------------+-----------------+----------------------+
  ~~~
- ### C’est bien tout ça, mais vous n’auriez pas un moyen de lancer l’application par la console ?
+ ### All of this is fine, but you do not have a way to run the stack through the console ?
 
- Et bien si ! En utilisant la console, vous pouvez déployer un serveur Vpn :
- 1.	Go the Cloudwatt Github in the applications/bundle-trusty-collectd-G-I/bundle-trusty-collectdGfr1/output repository
+Yes ! Using the console, you can deploy a monitoring server:
+ 1.	Go the Cloudwatt Github in the applications/bundle-trusty-collectd-G-I/bundle-trusty-collectdGfrX/output repository
  2.	Click on the file called CollectdfrX.heat.yml
  3.	Click on RAW, a web page appear with the script details
  4.	Save as its content on your PC. You can use the default name proposed by your browser (just remove the .txt)
@@ -265,7 +265,7 @@ $ heat stack-show Collectd-G-I
 ~~~
 
 
-### Adminiting the server  
+### Manage the server  
 
 ~~~ bash
 ssh -i <keypair> cloud@<node-ip@>
