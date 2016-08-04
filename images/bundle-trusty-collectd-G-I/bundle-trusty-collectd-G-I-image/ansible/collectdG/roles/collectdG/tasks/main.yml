@@ -85,7 +85,12 @@
 
  # Part: 5 Prepare Collectd Clients Configuration
 
-
+  - name: change owner and rights on collectdCLIENT directory
+    file:
+      path=/home/cloud/collectdCLIENT
+      state=directory
+      owner=cloud
+      group=cloud
 
   - name: collectd.conf configuration file
     template:
@@ -93,7 +98,7 @@
       dest=/home/cloud/collectdCLIENT/collectd.conf
       owner=cloud
       group=cloud
-      mode=0777
+      mode=0644
 
   - name: collectd.conf pré-configuration 1
     replace:
@@ -113,4 +118,4 @@
       dest=/home/cloud/collectdCLIENT/plugins.conf
       owner=cloud
       group=cloud
-      mode=0777
+      mode=0644
