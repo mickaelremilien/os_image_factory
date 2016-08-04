@@ -104,12 +104,15 @@ resources:
             echo "[local]" >> /etc/ansible/hosts
             echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
             cd /home/cloud
-            echo -n "$CDPASSWD$" >> collectd_passwd
+            sudo mkdir collectdCLIENT
+            sudo chown -R cloud:cloud collectdCLIENT
+            echo -n "$CDPASSWD$" >> collectdCLIENT/ccollectd_passwd
+            echo -n "$floating_ip_server$" >> collectdCLIENT/floating_ip_server
             sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
             sudo rm -r collectdG
           params:
             $CDPASSWD$: { get_param: collectd_passwd }
-
+            $floating_ip_server$: { get_attr: [floating_ip, floating_ip_address] }
 outputs:
 
   floating_ip_server:

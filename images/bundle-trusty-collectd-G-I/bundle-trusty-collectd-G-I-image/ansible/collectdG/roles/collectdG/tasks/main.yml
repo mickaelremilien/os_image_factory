@@ -82,3 +82,35 @@
       executable: /bin/bash
     shell: |
       curl 'http://admin:admin@127.0.0.1:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influx","type":"influxdb","url":"http://localhost:8086","access":"proxy","isDefault":true,"database":"collectd_db","user":"root","password":"root"}'
+
+ # Part: 5 Prepare Collectd Clients Configuration
+
+
+
+  - name: collectd.conf configuration file
+    template:
+      src=collectd.conf
+      dest=/home/cloud/collectdCLIENT/collectd.conf
+      owner=cloud
+      group=cloud
+      mode=0777
+
+  - name: collectd.conf pré-configuration 1
+    replace:
+      dest=/home/cloud/collectdCLIENT/collectd.conf
+      regexp='X.X.X.X'
+      replace='{{floating_ip_server}}'
+
+  - name: collectd.conf pré-configuration 2
+    replace:
+      dest=/home/cloud/collectdCLIENT/collectd.conf
+      regexp='Y.Y.Y.Y'
+      replace='{{collectd_passwd}}'
+
+  - name: plugins.conf configuration
+    copy:
+      src=roles/collectdG/files/plugins.conf
+      dest=/home/cloud/collectdCLIENT/plugins.conf
+      owner=cloud
+      group=cloud
+      mode=0777

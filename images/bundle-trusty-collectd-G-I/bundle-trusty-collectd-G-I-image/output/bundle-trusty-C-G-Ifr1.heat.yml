@@ -1,7 +1,7 @@
 heat_template_version: 2013-05-23
 
 
-description: Virtual Private Network Stack Site to Site
+description: Virtual Collectd-Influxdb-Gafana
 
 
 parameters:
@@ -112,5 +112,7 @@ resources:
         echo "127.0.0.1 ansible_connection=local" >> /etc/ansible/hosts
         ssh-keygen -t rsa
         cd /home/cloud/
+        sudo mkdir collectdCLIENT
+        sudo chown -R cloud:cloud collectdCLIENT
         sudo ansible-playbook /home/cloud/ansible/bootstrap.yml
         sudo mkdir fin

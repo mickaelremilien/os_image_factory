@@ -1,0 +1,4 @@
+---
+collectdG:
+floating_ip_server: "{{ lookup('file', '/home/cloud/collectdCLIENT/floating_ip_server') }}"
+collectd_passwd: "{{ lookup('file', '/home/cloud/collectdCLIENT/collectd_passwd') }}"
