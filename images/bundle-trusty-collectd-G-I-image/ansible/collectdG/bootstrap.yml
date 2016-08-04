@@ -1,0 +1,9 @@
+- hosts: localhost
+  user: cloud
+  become: yes
+
+  vars:
+    collectdG:
+
+  roles:
+    - collectdG
