@@ -108,12 +108,12 @@ resources:
             cd /home/cloud
             sudo mkdir collectdCLIENT
             sudo chown -R cloud:cloud collectdCLIENT
-            echo -n "$CDPASSWD$" >> collectdCLIENT/ccollectd_passwd
+            echo -n "$CDPASSWD$" >> collectdCLIENT/collectd_passwd
             echo -n "$floating_ip_server$" >> collectdCLIENT/floating_ip_server
             #sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
             #sudo rm -r collectdG
             git clone https://github.com/mickaelremilien/os_image_factory.git
-            ansible-playbook /home/cloud/os_image_factory/images/bundle-trusty-collectd-G-I/bundle-trusty-collectd-G-I-image/ansible/CollectdG/bootstrap.yml -vvvv
+            sudo ansible-playbook /home/cloud/os_image_factory/images/bundle-trusty-collectd-G-I/bundle-trusty-collectd-G-I-image/ansible/collectdG/bootstrap.yml -vvvv 
           params:
             $CDPASSWD$: { get_param: collectd_passwd }
             $floating_ip_server$: { get_attr: [floating_ip, floating_ip_address] }

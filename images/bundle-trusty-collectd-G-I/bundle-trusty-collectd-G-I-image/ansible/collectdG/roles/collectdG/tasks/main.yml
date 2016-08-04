@@ -109,7 +109,7 @@
 
   - name: plugins.conf configuration
     copy:
-      src=roles/collectdG/files/plugins.conf
+      src=files/plugins.conf
       dest=/home/cloud/collectdCLIENT/plugins.conf
       owner=cloud
       group=cloud
