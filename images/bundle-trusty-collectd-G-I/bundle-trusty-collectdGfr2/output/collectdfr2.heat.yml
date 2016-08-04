@@ -85,7 +85,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: MonSERVER
-      image: a14dd837-5515-4823-be9b-6db18b3a707b
+      image: ca9bcfd4-3b14-4f58-9af5-c5b6b92c1a97
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
       networks:
@@ -110,6 +110,8 @@ resources:
             echo -n "$floating_ip_server$" >> collectdCLIENT/floating_ip_server
             sudo ansible-playbook /home/cloud/collectdG/bootstrap.yml
             sudo rm -r collectdG
+            sudo rm -r collectdCLIENT/floating_ip_server
+            sudo rm -r collectdCLIENT/collectd_passwd
           params:
             $CDPASSWD$: { get_param: collectd_passwd }
             $floating_ip_server$: { get_attr: [floating_ip, floating_ip_address] }
