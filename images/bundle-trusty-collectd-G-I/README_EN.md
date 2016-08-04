@@ -217,6 +217,40 @@ Yes ! Using the console, you can deploy a monitoring server:
 
 ![Collectd-G-I_Archi](img/archicollectd-G-I.png)
 
+### To connect a Client ?
+
+1. Get a SFTP Client (like Filezilla) or any other.
+sudo apt-get install Filezilla
+
+![filezilla1](img/filez1)
+
+2. Add your key in the SFTP Client and Connect yourself on the Openvpn Server.
+  - Click on edit then on parameters
+  - Click on SFTP
+  - Click on ADD a new key
+  - Look after your key file
+  - Save it
+  - Tape the ip address of the server collectd into the ip field
+  - Tape cloud into the id field
+  - Tape 22 into the port field
+  - Click on the connexion button
+  - You are connected to your server  
+
+
+ ![filezilla2](img/filez2)
+
+3. Download and install the service collectd taping `sudo apt-get install collectd -y`
+
+4. Backup the default config by renaming the file `/etc/collectd/collectd.conf` by  `/etc/collectd/collectd.conf.old`
+
+5. Drag and drop the archive `/home/cloud/collectdCLIENT/plugins.conf` and `/home/cloud/collectdCLIENT/collectd.conf` into you `/etc/collectd/` dicrectory.
+
+6. Launch collectd on the with the command `sudo service collectd restart`.
+
+7. The Client is connected.
+
+8. The pluging ping is activate (by default check the lantence between google and your client)
+
 ### Enjoy
 
 Once all this makes you have a solution of monitoring prêtte to be used, you can get back the IP (public and private), under networks, networks, associated with the authorities created thanks to the following command (the section `outputs ` list the outputs of the stack):

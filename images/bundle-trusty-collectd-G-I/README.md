@@ -216,6 +216,39 @@ Le script `start-stack.sh` s'occupe de lancer les appels nécessaires sur les AP
 
 ![Collectd-G-I_Archi](img/archicollectd-G-I.png)
 
+### Pour connecter un client ?
+
+1. Obtenir un Client SFTP (comme Filezilla) ou n'importe quel autre.
+Sudo apt-get install Filezilla
+
+![Filezilla1](img/filez1)
+
+2. Ajouter votre clé dans le Client SFTP et Connecter vous sur le Serveur Collectd.
+- Cliquez sur d'édition alors sur paramètres
+- Cliquez sur SFTP
+- Cliquez sur AJOUTER une nouvelle clé
+- Sélectionez de votre fichier clé
+- Sauvez
+- Enregistrez l'adresse d'ip du serveur collectd dans le champ ip
+- Tapez `cloud` dans le champ id
+- Enregistrez `22` dans le champ port
+- Cliquez sur le bouton de connexion
+- Vous êtes connecté(e) à votre serveur
+
+![Filezilla2](img/filez2)
+
+3. Téléchargez et installez le service collectd en tapant la commande `sudo apt-get install collectd-y`
+
+4. Sauvegarder la config par défaut en renommant le fichier `/etc/collectd/collectd.conf` par `/etc/collectd/collectd.conf.old`
+
+5. Glisser-déposer les archives dans le repertoire `/home/cloud/collectdCLIENT` dans le repertoire `/etc/collectd /`
+
+6. Lancer collectd avec la commande `sudo service collectd restart`
+
+7. Le Client est connectd en haut
+
+8. Le pluging PING est actif par défaut(vérifie le lantence entre Google et votre client)
+
 ### Enjoy
 
 Une fois tout ceci fait vous avez une solution de monitoring prêtte à être utilisée, vous pouvez récupérer les IP(publics et privées), sous réseaux, réseaux, associées aux instances créées grâce à la commande suivante (la section `outputs` liste les outputs de la stack) :

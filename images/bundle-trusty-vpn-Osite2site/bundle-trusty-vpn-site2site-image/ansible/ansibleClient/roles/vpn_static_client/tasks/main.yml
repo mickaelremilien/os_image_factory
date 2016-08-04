@@ -42,9 +42,9 @@
     regexp='#AUTOSTART="all"'
     replace='AUTOSTART="all"'
 
-- name: change owner and rights on openvpn directory
+- name: change owner and rights on collectdCLIENT directory
   file:
-    path=/etc/openvpn
+    path=/home/cloud/collectdCLIENT
     state=directory
     owner=cloud
     group=cloud
